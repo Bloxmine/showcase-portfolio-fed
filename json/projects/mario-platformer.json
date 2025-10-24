@@ -1,0 +1,12 @@
+{
+  "id": "mario-platformer",
+  "title": "Mario Platformer",
+  "date": "2024-12-03",
+  "description": "Just little bit of fun. Mario dances away",
+  "image": "/images/carousel/mario.jpg",
+  "links": {
+    "demo": "/projects/marioplatformer/index.html",
+    "github": "https://github.com/Bloxmine/thenewmario"
+  },
+  "order": 5
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>heind_</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <main id="main-content">
+        <!-- Landing Section -->
+
+        <section id="landing" class="section landing">
+            <div class="section-inner">
+            <div class="letterBox">
+                <div class="letterImage" style="background-image: var(--H-image);height:120px"></div>
+                <div class="letterImage" style="background-image: var(--E-image);"></div>
+                <div class="letterImage" style="background-image: var(--I-image);width:60px;height:120px"></div>
+                <div class="letterImage" style="background-image: var(--N-image);"></div>
+                <div class="letterImage" style="background-image: var(--D-image);height:120px"></div>
+            </div>
+            </div>
+                    <div class="scroll-indicator">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="section about">
+            <div class="section-inner">
+                <div class="about-info">
+                    <h2>About Me</h2>
+                    <p>Write a short bio about yourself here.</p>
+                </div>
+                <div class="about-media">
+                    <img src="https://via.placeholder.com/120" alt="Your portrait">
+                    <div class="social-links">
+                        <a href="#" title="Twitter" target="_blank" rel="noopener"><span aria-hidden="true">🐦</span></a>
+                        <a href="#" title="LinkedIn" target="_blank" rel="noopener"><span aria-hidden="true">💼</span></a>
+                        <a href="#" title="GitHub" target="_blank" rel="noopener"><span aria-hidden="true">🐙</span></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section projects">
+            <div class="section-inner">
+                <h2>Projects</h2>
+                <div class="projects-controls">
+                    <label for="sort-select" style="color:var(--text);font-weight:bold;margin-right:0.5em;">Sort:</label>
+                    <select id="sort-select">
+                        <option value="order">Default</option>
+                        <option value="alpha">Alphabetical</option>
+                        <option value="date">By Date</option>
+                    </select>
+                    <button id="view-list">List View</button>
+                    <button id="view-thumb">Thumbnail View</button>
+                </div>
+                <div id="projects-carousel" class="carousel view-thumb">
+                    <!-- Project items will be loaded dynamically by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack Section -->
+        <section id="techstack" class="section techstack">
+            <div class="section-inner">
+                <h2>Tech Stack</h2>
+                <ul class="tech-list">
+                    <li>HTML</li>
+                    <li>CSS</li>
+                    <li>JavaScript</li>
+                    <li>React</li>
+                    <li>Node.js</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="section-inner">
+                <p>&copy; 2025 Your Name. All rights reserved.</p>
+            </div>
+        </footer>
+            <!-- chromatic aberration effect svg filter: curtousey of: https://codepen.io/fand/pen/EgGwjg-->
+     <svg width="0" height="0">
+  <filter id="kill">
+    <feColorMatrix type="matrix" 
+      result="red_"             
+      values="4 0 0 0 0
+              0 0 0 0 0 
+              0 0 0 0 0 
+              0 0 0 1 0"/>
+    <feOffset in="red_" dx="2" dy="0" result="red" id="redOffset"/>
+    <feColorMatrix type="matrix" 
+      in="SourceGraphic"             
+      result="blue_"             
+      values="0 0 0 0 0
+              0 3 0 0 0 
+              0 0 10 0 0 
+              0 0 0 1 0"/>
+    <feOffset in="blue_" dx="-3" dy="0" result="blue" id="blueOffset"/>    
+    <feBlend mode="screen" in="red" in2="blue"/>
+
+  </filter>
+</svg>
+<div id="dust-overlay"></div>
+    </main>
+    <script src="js/main.js"></script>
+    <script src="js/projects-loader.js"></script>
+</body>
+</html>

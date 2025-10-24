@@ -1,0 +1,12 @@
+{
+  "id": "threejs",
+  "title": "Three.js",
+    "date": "2023-11-15",
+  "description": "Three.js is a JavaScript library that allows you to create 3D graphics in the browser. I have been experimenting with Three.js to create interactive 3D models and animations. I've been working on 3D games, concepts and animations.",
+  "image": "/images/carousel/spitfire.jpg",
+  "links": {
+    "demo": "/threejs/spitfire/index.html",
+    "github": "#"
+  },
+  "order": 6
+}

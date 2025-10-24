@@ -1,0 +1,11 @@
+{
+  "id": "gifcursors",
+  "title": "GIFcursors",
+  "date": "2025-07-15",
+  "description": "Ever wanted Cursormania without the spyware? Here's your chance:",
+  "image": "/images/carousel/cursor.jpg",
+  "links": {
+    "github": "https://github.com/Bloxmine/GIFCursors"
+  },
+  "order": 7
+}
