@@ -1,0 +1,11 @@
+{
+  "id": "ziswell",
+  "title": "Ziswell",
+    "date": "2023-11-15",
+  "description": "Remember the 90s? Fortune favours the old.",
+  "image": "/images/carousel/ziswell.jpg",
+  "links": {
+    "demo": "/projects/ziswell/ziswell.html?fromhome"
+  },
+  "order": 4
+}
