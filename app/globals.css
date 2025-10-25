@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url("https://rsms.me/inter/inter.css");
+
+@font-face {
+	font-family: 'Intranet';
+	src: url('../public/fonts/IntraNet.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'MisterFirley';
+	src: url('../public/fonts/MisterFirley.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Oswald';
+	src: url('../public/fonts/Oswald-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+:root {
+	--font-flying-text: 'Intranet', Arial, sans-serif;
+	--font-h2: 'MisterFirley', Arial, sans-serif;
+	--font-p: 'Oswald', Arial, sans-serif;
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	scroll-snap-type: y proximity;
+	scroll-behavior: smooth;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+body {
+	min-height: 100vh;
+}
+
+h2 {
+	font-family: var(--font-h2);
+}
+
+p {
+	font-family: var(--font-p);
+}
+
+#main-content {
+	scroll-snap-type: y proximity;
+}
+
+/* Keyframe Animations */
+@keyframes flyDiagonal {
+	0% {
+		transform: translateX(-100vw) translateY(50vh) rotate(-15deg);
+	}
+	100% {
+		transform: translateX(100vw) translateY(-50vh) rotate(-15deg);
+	}
+}
+
+@keyframes wobbleSlow {
+	0%, 100% { transform: rotate(0deg); }
+	25% { transform: rotate(2deg); }
+	50% { transform: rotate(0deg); }
+	75% { transform: rotate(-2deg); }
+	100% { transform: rotate(0deg); }
+}
+
+@keyframes floatWaveSmooth {
+	0%   { transform: translateY(0); }
+	50%  { transform: translateY(-20px); }
+	100% { transform: translateY(0); }
+}
+
+@keyframes bounce {
+	0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+	40% { transform: translateX(-50%) translateY(-10px); }
+	60% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* Letter Box Animation */
+.letterBox {
+	display: flex;
+	gap: 10px;
+	align-items: flex-end;
+	animation: wobbleSlow 3s ease-in-out infinite;
+}
+
+.letterImage {
+	width: 100px;
+	height: 100px;
+	display: inline-block;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	animation: floatWaveSmooth 2s ease-in-out infinite;
+	transform-origin: center bottom;
+	filter: url(#kill);
+}
+
+.letterImage:nth-child(1) { animation-delay: 0s; }
+.letterImage:nth-child(2) { animation-delay: 0.1s; }
+.letterImage:nth-child(3) { animation-delay: 0.2s; }
+.letterImage:nth-child(4) { animation-delay: 0.3s; }
+.letterImage:nth-child(5) { animation-delay: 0.4s; }
+
+/* Chromatic Aberration Layer Clip Path */
+.chromatic-layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	max-width: 900px;
+	pointer-events: none;
+	transition: transform 0.2s ease-out;
+	padding: 3rem 2.5rem;
+	box-sizing: border-box;
+	min-height: 100%;
+	clip-path: polygon(
+		0% 0%, 2% 0.2%, 4% 0%, 6% 0.3%, 8% 0.1%, 10% 0.2%, 12% 0%, 14% 0.3%, 16% 0.1%, 18% 0.2%, 20% 0%, 22% 0.3%, 24% 0.1%, 26% 0.2%, 28% 0%, 30% 0.3%, 32% 0.1%, 34% 0.2%, 36% 0%, 38% 0.3%, 40% 0.1%, 42% 0.2%, 44% 0%, 46% 0.3%, 48% 0.1%, 50% 0.2%, 52% 0%, 54% 0.3%, 56% 0.1%, 58% 0.2%, 60% 0%, 62% 0.3%, 64% 0.1%, 66% 0.2%, 68% 0%, 70% 0.3%, 72% 0.1%, 74% 0.2%, 76% 0%, 78% 0.3%, 80% 0.1%, 82% 0.2%, 84% 0%, 86% 0.3%, 88% 0.1%, 90% 0.2%, 92% 0%, 94% 0.3%, 96% 0.1%, 98% 0.2%, 100% 0%,
+		100% 2%, 99.8% 4%, 100% 6%, 99.7% 8%, 100% 10%, 99.9% 12%, 100% 14%, 99.7% 16%, 100% 18%, 99.8% 20%, 100% 22%, 99.7% 24%, 100% 26%, 99.9% 28%, 100% 30%, 99.7% 32%, 100% 34%, 99.8% 36%, 100% 38%, 99.7% 40%, 100% 42%, 99.9% 44%, 100% 46%, 99.7% 48%, 100% 50%, 99.8% 52%, 100% 54%, 99.7% 56%, 100% 58%, 99.9% 60%, 100% 62%, 99.7% 64%, 100% 66%, 99.8% 68%, 100% 70%, 99.7% 72%, 100% 74%, 99.9% 76%, 100% 78%, 99.7% 80%, 100% 82%, 99.8% 84%, 100% 86%, 99.7% 88%, 100% 90%, 99.9% 92%, 100% 94%, 99.8% 96%, 100% 98%, 100% 100%,
+		98% 100%, 96% 99.8%, 94% 100%, 92% 99.7%, 90% 100%, 88% 99.9%, 86% 100%, 84% 99.7%, 82% 100%, 80% 99.8%, 78% 100%, 76% 99.7%, 74% 100%, 72% 99.9%, 70% 100%, 68% 99.7%, 66% 100%, 64% 99.8%, 62% 100%, 60% 99.7%, 58% 100%, 56% 99.9%, 54% 100%, 52% 99.7%, 50% 100%, 48% 99.8%, 46% 100%, 44% 99.7%, 42% 100%, 40% 99.9%, 38% 100%, 36% 99.7%, 34% 100%, 32% 99.8%, 30% 100%, 28% 99.7%, 26% 100%, 24% 99.9%, 22% 100%, 20% 99.7%, 18% 100%, 16% 99.8%, 14% 100%, 12% 99.7%, 10% 100%, 8% 99.9%, 6% 100%, 4% 99.8%, 2% 100%, 0% 100%,
+		0% 98%, 0.2% 96%, 0% 94%, 0.3% 92%, 0% 90%, 0.1% 88%, 0% 86%, 0.3% 84%, 0% 82%, 0.2% 80%, 0% 78%, 0.3% 76%, 0% 74%, 0.1% 72%, 0% 70%, 0.3% 68%, 0% 66%, 0.2% 64%, 0% 62%, 0.3% 60%, 0% 58%, 0.1% 56%, 0% 54%, 0.3% 52%, 0% 50%, 0.2% 48%, 0% 46%, 0.3% 44%, 0% 42%, 0.1% 40%, 0% 38%, 0.3% 36%, 0% 34%, 0.2% 32%, 0% 30%, 0.3% 28%, 0% 26%, 0.1% 24%, 0% 22%, 0.3% 20%, 0% 18%, 0.2% 16%, 0% 14%, 0.3% 12%, 0% 10%, 0.1% 8%, 0% 6%, 0.3% 4%, 0% 2%, 0% 0%
+	);
+}
+
+.chromatic-layer.cyan {
+	background: #09fdfd;
+	opacity: 1;
+	z-index: 1;
+}
+
+.chromatic-layer.magenta {
+	background: #fc0101;
+	opacity: 1;
+	mix-blend-mode: multiply;
+	z-index: 2;
+}
+
+/* Torn Edge Clip Path for Sections */
+.torn-edges {
+	clip-path: polygon(
+		0% 0%, 2% 0.2%, 4% 0%, 6% 0.3%, 8% 0.1%, 10% 0.2%, 12% 0%, 14% 0.3%, 16% 0.1%, 18% 0.2%, 20% 0%, 22% 0.3%, 24% 0.1%, 26% 0.2%, 28% 0%, 30% 0.3%, 32% 0.1%, 34% 0.2%, 36% 0%, 38% 0.3%, 40% 0.1%, 42% 0.2%, 44% 0%, 46% 0.3%, 48% 0.1%, 50% 0.2%, 52% 0%, 54% 0.3%, 56% 0.1%, 58% 0.2%, 60% 0%, 62% 0.3%, 64% 0.1%, 66% 0.2%, 68% 0%, 70% 0.3%, 72% 0.1%, 74% 0.2%, 76% 0%, 78% 0.3%, 80% 0.1%, 82% 0.2%, 84% 0%, 86% 0.3%, 88% 0.1%, 90% 0.2%, 92% 0%, 94% 0.3%, 96% 0.1%, 98% 0.2%, 100% 0%,
+		100% 2%, 99.8% 4%, 100% 6%, 99.7% 8%, 100% 10%, 99.9% 12%, 100% 14%, 99.7% 16%, 100% 18%, 99.8% 20%, 100% 22%, 99.7% 24%, 100% 26%, 99.9% 28%, 100% 30%, 99.7% 32%, 100% 34%, 99.8% 36%, 100% 38%, 99.7% 40%, 100% 42%, 99.9% 44%, 100% 46%, 99.7% 48%, 100% 50%, 99.8% 52%, 100% 54%, 99.7% 56%, 100% 58%, 99.9% 60%, 100% 62%, 99.7% 64%, 100% 66%, 99.8% 68%, 100% 70%, 99.7% 72%, 100% 74%, 99.9% 76%, 100% 78%, 99.7% 80%, 100% 82%, 99.8% 84%, 100% 86%, 99.7% 88%, 100% 90%, 99.9% 92%, 100% 94%, 99.8% 96%, 100% 98%, 100% 100%,
+		98% 100%, 96% 99.8%, 94% 100%, 92% 99.7%, 90% 100%, 88% 99.9%, 86% 100%, 84% 99.7%, 82% 100%, 80% 99.8%, 78% 100%, 76% 99.7%, 74% 100%, 72% 99.9%, 70% 100%, 68% 99.7%, 66% 100%, 64% 99.8%, 62% 100%, 60% 99.7%, 58% 100%, 56% 99.9%, 54% 100%, 52% 99.7%, 50% 100%, 48% 99.8%, 46% 100%, 44% 99.7%, 42% 100%, 40% 99.9%, 38% 100%, 36% 99.7%, 34% 100%, 32% 99.8%, 30% 100%, 28% 99.7%, 26% 100%, 24% 99.9%, 22% 100%, 20% 99.7%, 18% 100%, 16% 99.8%, 14% 100%, 12% 99.7%, 10% 100%, 8% 99.9%, 6% 100%, 4% 99.8%, 2% 100%, 0% 100%,
+		0% 98%, 0.2% 96%, 0% 94%, 0.3% 92%, 0% 90%, 0.1% 88%, 0% 86%, 0.3% 84%, 0% 82%, 0.2% 80%, 0% 78%, 0.3% 76%, 0% 74%, 0.1% 72%, 0% 70%, 0.3% 68%, 0% 66%, 0.2% 64%, 0% 62%, 0.3% 60%, 0% 58%, 0.1% 56%, 0% 54%, 0.3% 52%, 0% 50%, 0.2% 48%, 0% 46%, 0.3% 44%, 0% 42%, 0.1% 40%, 0% 38%, 0.3% 36%, 0% 34%, 0.2% 32%, 0% 30%, 0.3% 28%, 0% 26%, 0.1% 24%, 0% 22%, 0.3% 20%, 0% 18%, 0.2% 16%, 0% 14%, 0.3% 12%, 0% 10%, 0.1% 8%, 0% 6%, 0.3% 4%, 0% 2%, 0% 0%
+	);
+}
+
+/* Dust Overlay */
+#dust-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	background-image: url('../public/images/dustoverlay.jpg');
+	background-size: cover;
+	mix-blend-mode: screen;
+	opacity: 0.05;
+	z-index: 9999;
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+	position: absolute;
+	bottom: 30px;
+	left: 50%;
+	transform: translateX(-50%);
+	animation: bounce 2s infinite;
+}
+
+/* Flying Text Animations */
+.flying-text {
+	position: absolute;
+	font-family: var(--font-flying-text);
+	font-size: clamp(2rem, 8vw, 6rem);
+	font-weight: 700;
+	white-space: nowrap;
+	pointer-events: none;
+	opacity: 0;
+	transform: translateX(-100%);
+	will-change: transform, opacity;
+}
+
+.flying-text:nth-child(1) { top: 10%; left: -20%; }
+.flying-text:nth-child(2) { top: 20%; right: -20%; transform: translateX(100%); }
+.flying-text:nth-child(3) { top: 30%; left: -30%; }
+.flying-text:nth-child(4) { top: 40%; right: -30%; transform: translateX(100%); }
+.flying-text:nth-child(5) { top: 50%; left: -25%; }
+.flying-text:nth-child(6) { top: 60%; right: -25%; transform: translateX(100%); }
+.flying-text:nth-child(7) { top: 70%; left: -35%; }
+.flying-text:nth-child(8) { top: 80%; right: -35%; transform: translateX(100%); }
+.flying-text:nth-child(9) { top: 90%; left: -20%; }
+
+/* Responsive */
+@media (max-width: 768px) {
+	.flying-text {
+		font-size: clamp(1.5rem, 6vw, 4rem);
+	}
+}

@@ -1,0 +1,12 @@
+{
+  "id": "webdarts",
+  "title": "Web Darts",
+    "date": "2023-11-15",
+  "description": "A web implementation based on the classic software aptly named 'Darts', which was sadly no longer being maintaned.",
+  "image": "/images/carousel/darts.jpg",
+  "links": {
+    "demo": "/darts",
+    "github": "https://github.com/Bloxmine/webdarts"
+  },
+  "order": 3
+}
