@@ -12,6 +12,50 @@
         <!-- Landing Section -->
 
         <section id="landing" class="section landing">
+            <!-- Diagonal flying background text -->
+            <div class="diagonal-bg-text">
+                <div class="diagonal-text-line" style="--delay: 0s;">
+                    <span>DEVELOPER</span>
+                    <span>CREATIVE</span>
+                    <span>DESIGNER</span>
+                    <span>CODER</span>
+                    <span>DEVELOPER</span>
+                    <span>CREATIVE</span>
+                    <span>DESIGNER</span>
+                    <span>CODER</span>
+                </div>
+                <div class="diagonal-text-line" style="--delay: -2s;">
+                    <span>FRONTEND</span>
+                    <span>FULLSTACK</span>
+                    <span>JAVASCRIPT</span>
+                    <span>REACT</span>
+                    <span>FRONTEND</span>
+                    <span>FULLSTACK</span>
+                    <span>JAVASCRIPT</span>
+                    <span>REACT</span>
+                </div>
+                <div class="diagonal-text-line" style="--delay: -4s;">
+                    <span>UI/UX</span>
+                    <span>PORTFOLIO</span>
+                    <span>WEBSITE</span>
+                    <span>INTERACTIVE</span>
+                    <span>UI/UX</span>
+                    <span>PORTFOLIO</span>
+                    <span>WEBSITE</span>
+                    <span>INTERACTIVE</span>
+                </div>
+                <div class="diagonal-text-line" style="--delay: -6s;">
+                    <span>MODERN</span>
+                    <span>RESPONSIVE</span>
+                    <span>DYNAMIC</span>
+                    <span>ANIMATION</span>
+                    <span>MODERN</span>
+                    <span>RESPONSIVE</span>
+                    <span>DYNAMIC</span>
+                    <span>ANIMATION</span>
+                </div>
+            </div>
+            
             <div class="section-inner">
             <div class="letterBox">
                 <div class="letterImage" style="background-image: var(--H-image);height:120px"></div>
@@ -27,13 +71,31 @@
             </svg>
         </div>
         </section>
+        <!-- Animated section -->
+        <section id="animated" class="section animated tall-section">
+            <div class="text-flying-container">
+                <div class="text-flying-by">
+                    <span class="flying-text" data-speed="1">Web Developer</span>
+                    <span class="flying-text" data-speed="0.8">Creative Coder</span>
+                    <span class="flying-text" data-speed="1.2">Tech Enthusiast</span>
+                    <span class="flying-text" data-speed="0.9">Problem Solver</span>
+                    <span class="flying-text" data-speed="1.1">Graphic Designer</span>
+                    <span class="flying-text" data-speed="0.7">Student at FHICT</span>
+                    <span class="flying-text" data-speed="1.3">Frontend Developer</span>
+                    <span class="flying-text" data-speed="0.85">Photographer</span>
+                    <span class="flying-text" data-speed="1.15">All round fun guy</span>
+                </div>
+            </div>
+        </section>
 
         <!-- About Me Section -->
         <section id="about" class="section about">
             <div class="section-inner">
                 <div class="about-info">
                     <h2>About Me</h2>
-                    <p>Write a short bio about yourself here.</p>
+                    <p>Hey, I'm Hein! 24 years old and with a passion for web development. I love creating random projects in my spare time. This website serves as a showcase of my skills.
+
+I've been a student at Fontys ICT & Media Design since 2023.</p>
                 </div>
                 <div class="about-media">
                     <img src="https://via.placeholder.com/120" alt="Your portrait">
@@ -83,7 +145,7 @@
         <!-- Footer -->
         <footer class="footer">
             <div class="section-inner">
-                <p>&copy; 2025 Your Name. All rights reserved.</p>
+                <p>&copy; 2025 heind_</p>
             </div>
         </footer>
             <!-- chromatic aberration effect svg filter: curtousey of: https://codepen.io/fand/pen/EgGwjg-->
@@ -108,8 +170,44 @@
 
   </filter>
 </svg>
+<svg>
+    <filter id="cymk-printing-offset">
+        <feColorMatrix in="SourceGraphic" type="matrix" values="
+            0.3 0 0 0 0
+            0 0.59 0 0 0
+            0 0 0.11 0 0
+            0 0 0 1 0" result="gray"/>
+
+        <feComponentTransfer in="gray" result="cyan">
+            <feFuncR type="table" tableValues="1 0"/>
+            <feFuncG type="table" tableValues="1 0"/>
+            <feFuncB type="table" tableValues="1 0"/>
+        </feComponentTransfer>
+
+        <feComponentTransfer in="gray" result="magenta">
+            <feFuncR type="table" tableValues="1 0"/>
+            <feFuncG type="table" tableValues="0 1"/>
+            <feFuncB type="table" tableValues="1 0"/>
+        </feComponentTransfer>
+
+        <feComponentTransfer in="gray" result="yellow">
+            <feFuncR type="table" tableValues="1 0"/>
+            <feFuncG type="table" tableValues="1 0"/>
+            <feFuncB type="table" tableValues="0 1"/>
+        </feComponentTransfer>
+
+        <feOffset in="cyan" dx="-2" dy="0" result="cyanOffset"/>
+        <feOffset in="magenta" dx="2" dy="0" result="magentaOffset"/>
+        <feOffset in="yellow" dx="0" dy="2" result="yellowOffset"/>
+
+        <feBlend mode="screen" in="cyanOffset" in2="magentaOffset" result="cmBlend"/>
+        <feBlend mode="screen" in="cmBlend" in2="yellowOffset"/>
+    </filter>
+</svg>
 <div id="dust-overlay"></div>
     </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/projects-loader.js"></script>
 </body>
