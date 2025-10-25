@@ -1,396 +1,486 @@
-// main.js for portfolio interactivity
+// ===================================
+// PORTFOLIO INTERACTIVE SCRIPT
+// ===================================
 
-// courtesy of: https://codepen.io/fand/pen/EgGwjg
-const redOffset = document.getElementById('redOffset');
-const blueOffset = document.getElementById('blueOffset');
-const maxOffset = 5;
+// ===================================
+// GLOBAL CONFIGURATION
+// ===================================
+const CONFIG = {
+	chromaticAberration: {
+		maxOffset: 5,
+		redDefault: { dx: 2, dy: 0 },
+		blueDefault: { dx: -3, dy: 0 }
+	},
+	rotation: {
+		max: 2,
+		cyanMultiplier: -1.5,
+		magentaMultiplier: 2.5,
+		cyanOffset: 8,
+		magentaOffset: 8
+	},
+	animation: {
+		duration: 0.2,
+		resetDuration: 0.3,
+		ease: 'power2.out'
+	},
+	scrollTrigger: {
+		threshold: 0.1,
+		rootMargin: '-10% 0px -10% 0px'
+	}
+};
+
+// ===================================
+// DOM ELEMENTS
+// ===================================
+const elements = {
+	redOffset: document.getElementById('redOffset'),
+	blueOffset: document.getElementById('blueOffset')
+};
+
+// ===================================
+// UTILITY FUNCTIONS
+// ===================================
+
+/**
+ * Detect if device is touch-enabled (including iPad in desktop mode)
+ */
+function isTouchDevice() {
+	const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+	const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+	const lacksHover = window.matchMedia('(hover: none)').matches;
+	const isProbablyIPad = hasTouch && (hasCoarsePointer || lacksHover || navigator.maxTouchPoints > 0);
+	
+	return isProbablyIPad || hasCoarsePointer || lacksHover;
+}
+
+/**
+ * Apply GSAP animation to element
+ */
+function animateElement(element, props) {
+	if (typeof gsap !== 'undefined') {
+		gsap.to(element, props);
+	} else {
+		// Fallback for rotation if GSAP not loaded
+		if (props.rotation !== undefined) {
+			element.style.transform = `rotate(${props.rotation}deg)`;
+		}
+	}
+}
+
+/**
+ * Get chromatic layers from wrapper
+ */
+function getChromaticLayers(sectionInner) {
+	const wrapper = sectionInner.parentElement;
+	return {
+		cyan: wrapper.querySelector('.chromatic-layer.cyan'),
+		magenta: wrapper.querySelector('.chromatic-layer.magenta')
+	};
+}
+
+// ===================================
+// CHROMATIC ABERRATION EFFECT
+// ===================================
+
+/**
+ * Update chromatic aberration based on mouse position
+ */
+function updateChromaticAberration(x, y) {
+	const { maxOffset } = CONFIG.chromaticAberration;
+	
+	elements.redOffset.setAttribute('dx', x * maxOffset);
+	elements.redOffset.setAttribute('dy', y * maxOffset);
+	elements.blueOffset.setAttribute('dx', -x * maxOffset);
+	elements.blueOffset.setAttribute('dy', -y * maxOffset);
+}
+
+/**
+ * Reset chromatic aberration to default
+ */
+function resetChromaticAberration() {
+	const { redDefault, blueDefault } = CONFIG.chromaticAberration;
+	
+	elements.redOffset.setAttribute('dx', redDefault.dx);
+	elements.redOffset.setAttribute('dy', redDefault.dy);
+	elements.blueOffset.setAttribute('dx', blueDefault.dx);
+	elements.blueOffset.setAttribute('dy', blueDefault.dy);
+}
+
+// ===================================
+// ROTATION EFFECTS
+// ===================================
+
+/**
+ * Apply rotation effects to section and chromatic layers
+ */
+function applyRotationEffects(x, y) {
+	const { max, cyanMultiplier, magentaMultiplier, cyanOffset, magentaOffset } = CONFIG.rotation;
+	const { duration, ease } = CONFIG.animation;
+	const rotation = x * max;
+	
+	const sectionInners = document.querySelectorAll('.section-inner');
+	sectionInners.forEach(sectionInner => {
+		// Rotate main section
+		animateElement(sectionInner, { rotation, duration, ease });
+		
+		// Rotate chromatic layers
+		const layers = getChromaticLayers(sectionInner);
+		
+		if (layers.cyan) {
+			animateElement(layers.cyan, {
+				rotation: rotation * cyanMultiplier,
+				x: -x * cyanOffset,
+				y: -y * (cyanOffset / 2),
+				duration,
+				ease
+			});
+		}
+		
+		if (layers.magenta) {
+			animateElement(layers.magenta, {
+				rotation: rotation * magentaMultiplier,
+				x: x * magentaOffset,
+				y: y * (magentaOffset / 2),
+				duration,
+				ease
+			});
+		}
+	});
+}
+
+/**
+ * Reset all rotation effects
+ */
+function resetRotationEffects() {
+	const { resetDuration, ease } = CONFIG.animation;
+	
+	const sectionInners = document.querySelectorAll('.section-inner');
+	sectionInners.forEach(sectionInner => {
+		// Reset main section
+		animateElement(sectionInner, { rotation: 0, duration: resetDuration, ease });
+		
+		// Reset chromatic layers
+		const layers = getChromaticLayers(sectionInner);
+		
+		if (layers.cyan) {
+			animateElement(layers.cyan, { rotation: 0, x: 0, y: 0, duration: resetDuration, ease });
+		}
+		
+		if (layers.magenta) {
+			animateElement(layers.magenta, { rotation: 0, x: 0, y: 0, duration: resetDuration, ease });
+		}
+	});
+}
+
+// ===================================
+// MOUSE EVENT HANDLERS
+// ===================================
 
 document.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth) * 2 - 1;
-    const y = (e.clientY / window.innerHeight) * 2 - 1;
-    
-    // Chromatic aberration effect
-    const redDx = x * maxOffset;
-    const redDy = y * maxOffset;
-    const blueDx = -x * maxOffset;
-    const blueDy = -y * maxOffset;
-
-    redOffset.setAttribute('dx', redDx);
-    redOffset.setAttribute('dy', redDy);
-    blueOffset.setAttribute('dx', blueDx);
-    blueOffset.setAttribute('dy', blueDy);
-    
-    // Rotation effect for section-inner elements using GSAP
-    const maxRotation = 2; // Maximum rotation in degrees
-    const rotation = x * maxRotation;
-    
-    const sectionInners = document.querySelectorAll('.section-inner');
-    sectionInners.forEach(sectionInner => {
-        if (typeof gsap !== 'undefined') {
-            // Rotate main section-inner
-            gsap.to(sectionInner, {
-                rotation: rotation,
-                duration: 0.2,
-                ease: 'power2.out'
-            });
-            
-            // Get chromatic layers (now siblings in the parent wrapper)
-            const wrapper = sectionInner.parentElement;
-            const cyanLayer = wrapper.querySelector('.chromatic-layer.cyan');
-            const magentaLayer = wrapper.querySelector('.chromatic-layer.magenta');
-            
-            if (cyanLayer) {
-                gsap.to(cyanLayer, {
-                    rotation: -rotation * 1.5,
-                    x: -x * 8,
-                    y: -y * 4,
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-            }
-            
-            if (magentaLayer) {
-                gsap.to(magentaLayer, {
-                    rotation: rotation * 2.5,
-                    x: x * 8,
-                    y: y * 4,
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-            }
-        } else {
-            sectionInner.style.transform = `rotate(${rotation}deg)`;
-        }
-    });
+	const x = (e.clientX / window.innerWidth) * 2 - 1;
+	const y = (e.clientY / window.innerHeight) * 2 - 1;
+	
+	updateChromaticAberration(x, y);
+	applyRotationEffects(x, y);
 });
 
 document.addEventListener('mouseleave', () => {
-    // Reset chromatic aberration
-    redOffset.setAttribute('dx', 2);
-    redOffset.setAttribute('dy', 0);
-    blueOffset.setAttribute('dx', -3);
-    blueOffset.setAttribute('dy', 0);
-    
-    // Reset rotation effect using GSAP
-    const sectionInners = document.querySelectorAll('.section-inner');
-    sectionInners.forEach(sectionInner => {
-        if (typeof gsap !== 'undefined') {
-            // Reset main section
-            gsap.to(sectionInner, {
-                rotation: 0,
-                duration: 0.3,
-                ease: 'power2.out'
-            });
-            
-            // Reset chromatic layers (now siblings in the parent wrapper)
-            const wrapper = sectionInner.parentElement;
-            const cyanLayer = wrapper.querySelector('.chromatic-layer.cyan');
-            const magentaLayer = wrapper.querySelector('.chromatic-layer.magenta');
-            
-            if (cyanLayer) {
-                gsap.to(cyanLayer, {
-                    rotation: 0,
-                    x: 0,
-                    y: 0,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            }
-            
-            if (magentaLayer) {
-                gsap.to(magentaLayer, {
-                    rotation: 0,
-                    x: 0,
-                    y: 0,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            }
-        } else {
-            sectionInner.style.transform = 'rotate(0deg)';
-        }
-    });
+	resetChromaticAberration();
+	resetRotationEffects();
 });
 
-// apply the filter to the titles
-const titles = document.querySelectorAll('h1, h2');
-titles.forEach(title => {
-    title.style.filter = 'url(#kill)';
-});
+// ===================================
+// INITIALIZATION
+// ===================================
+
+/**
+ * Apply SVG filter to titles
+ */
+function applyFilterToTitles() {
+	const titles = document.querySelectorAll('h1, h2');
+	titles.forEach(title => {
+		title.style.filter = 'url(#kill)';
+	});
+}
+
+/**
+ * Create chromatic aberration layers for section elements
+ */
+function createChromaticLayers() {
+	const allSectionInners = document.querySelectorAll('.section-inner');
+	
+	allSectionInners.forEach(sectionInner => {
+		// Create wrapper
+		const wrapper = document.createElement('div');
+		wrapper.style.position = 'relative';
+		wrapper.style.width = '100%';
+		wrapper.style.maxWidth = '900px';
+		wrapper.style.margin = '0 auto';
+		
+		// Create cyan layer
+		const cyanLayer = document.createElement('div');
+		cyanLayer.className = 'chromatic-layer cyan';
+		cyanLayer.setAttribute('data-layer', 'cyan');
+		
+		// Create magenta layer
+		const magentaLayer = document.createElement('div');
+		magentaLayer.className = 'chromatic-layer magenta';
+		magentaLayer.setAttribute('data-layer', 'magenta');
+		
+		// Wrap elements
+		sectionInner.parentNode.insertBefore(wrapper, sectionInner);
+		wrapper.appendChild(cyanLayer);
+		wrapper.appendChild(magentaLayer);
+		wrapper.appendChild(sectionInner);
+	});
+}
+
+/**
+ * Setup project controls (view toggle and sorting)
+ */
+function setupProjectControls() {
+	const carousel = document.getElementById('projects-carousel');
+	const btnList = document.getElementById('view-list');
+	const btnThumb = document.getElementById('view-thumb');
+	const sortBtn = document.getElementById('sort-btn');
+	
+	// View toggle
+	if (btnList && btnThumb && carousel) {
+		btnList.addEventListener('click', () => {
+			carousel.classList.remove('view-thumb');
+			carousel.classList.add('view-list');
+		});
+		
+		btnThumb.addEventListener('click', () => {
+			carousel.classList.remove('view-list');
+			carousel.classList.add('view-thumb');
+		});
+	}
+	
+	// Project sorting
+	if (sortBtn && carousel) {
+		sortBtn.addEventListener('click', () => {
+			const items = Array.from(carousel.querySelectorAll('.project-item'));
+			const sorted = items.sort((a, b) => a.dataset.title.localeCompare(b.dataset.title));
+			sorted.forEach(item => carousel.appendChild(item));
+		});
+	}
+}
+
+// ===================================
+// GSAP ANIMATIONS
+// ===================================
+
+/**
+ * Setup URL hash updates on scroll
+ */
+function setupHashUpdates() {
+	const allSections = gsap.utils.toArray('.section');
+	
+	allSections.forEach((section) => {
+		ScrollTrigger.create({
+			trigger: section,
+			start: 'top center',
+			end: 'bottom center',
+			onEnter: () => updateHash(section.id),
+			onEnterBack: () => updateHash(section.id)
+		});
+	});
+}
+
+function updateHash(id) {
+	if (id) {
+		history.replaceState(null, null, '#' + id);
+	}
+}
+
+/**
+ * Setup section reveal animations
+ */
+function setupSectionAnimations() {
+	const sections = gsap.utils.toArray('.section:not(.landing):not(.full-width)');
+	const touchDevice = isTouchDevice();
+	
+	console.log('Touch device detected:', touchDevice);
+	
+	// Set initial states
+	sections.forEach((section) => {
+		const sectionInner = section.querySelector('.section-inner');
+		if (!sectionInner) return;
+		
+		if (touchDevice) {
+			gsap.set(sectionInner, { opacity: 0, y: 30, transformOrigin: 'center center' });
+		} else {
+			gsap.set(sectionInner, { y: -100, scale: 0.85, rotation: -3, opacity: 0, transformOrigin: 'center center' });
+		}
+	});
+	
+	// Create observer for reveals
+	const sectionObserver = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				animateSectionReveal(entry.target, touchDevice);
+				sectionObserver.unobserve(entry.target);
+			}
+		});
+	}, { 
+		threshold: CONFIG.scrollTrigger.threshold,
+		rootMargin: CONFIG.scrollTrigger.rootMargin
+	});
+	
+	sections.forEach(section => sectionObserver.observe(section));
+}
+
+/**
+ * Animate section reveal based on device type
+ */
+function animateSectionReveal(section, touchDevice) {
+	const sectionInner = section.querySelector('.section-inner');
+	if (!sectionInner) return;
+	
+	if (touchDevice) {
+		// Simple fade for touch devices
+		gsap.to(sectionInner, {
+			opacity: 1,
+			y: 0,
+			duration: 0.6,
+			ease: 'power2.out'
+		});
+	} else {
+		// Stamp animation for desktop
+		gsap.to(sectionInner, {
+			y: 0,
+			scale: 1,
+			rotation: 0,
+			opacity: 1,
+			ease: 'back.out(1.7)',
+			duration: 0.8
+		});
+		
+		// Add shake effect
+		gsap.delayedCall(0.5, () => {
+			gsap.to(sectionInner, {
+				keyframes: [
+					{ rotation: 1, duration: 0.05 },
+					{ rotation: -1, duration: 0.05 },
+					{ rotation: 0.5, duration: 0.05 },
+					{ rotation: 0, duration: 0.05 }
+				],
+				ease: 'power2.out'
+			});
+		});
+	}
+}
+
+/**
+ * Setup flying text animations
+ */
+function setupFlyingTextAnimations() {
+	const flyingTexts = gsap.utils.toArray('.flying-text');
+	const animatedSection = document.querySelector('#animated');
+	
+	if (flyingTexts.length === 0 || !animatedSection) return;
+	
+	flyingTexts.forEach((text, index) => {
+		const speed = parseFloat(text.dataset.speed) || 1;
+		const isFromRight = text.style.transform.includes('translateX(100%)');
+		const delay = index * 0.05;
+		
+		// Set initial state
+		gsap.set(text, {
+			opacity: 0,
+			x: isFromRight ? '120vw' : '-120vw'
+		});
+		
+		// Create flying animation
+		gsap.to(text, {
+			x: isFromRight ? '-120vw' : '120vw',
+			opacity: 1,
+			ease: 'none',
+			delay: delay,
+			scrollTrigger: {
+				trigger: animatedSection,
+				start: 'top 100%',
+				end: 'bottom 0%',
+				scrub: speed,
+				refreshPriority: -1,
+				invalidateOnRefresh: true,
+				onUpdate: (self) => {
+					const progress = self.progress;
+					let opacity = 1;
+					
+					if (progress < 0.2) {
+						opacity = progress / 0.2;
+					} else if (progress > 0.8) {
+						opacity = (1 - progress) / 0.2;
+					}
+					
+					gsap.set(text, { opacity });
+				}
+			}
+		});
+	});
+}
+
+/**
+ * Setup scroll snap behavior for animated section
+ */
+function setupScrollSnapBehavior() {
+	const animatedSection = document.querySelector('#animated');
+	if (!animatedSection || isTouchDevice()) return;
+	
+	ScrollTrigger.create({
+		trigger: animatedSection,
+		start: 'top 80%',
+		end: 'bottom 20%',
+		onEnter: () => document.body.style.scrollSnapType = 'none',
+		onLeave: () => document.body.style.scrollSnapType = 'y proximity',
+		onEnterBack: () => document.body.style.scrollSnapType = 'none',
+		onLeaveBack: () => document.body.style.scrollSnapType = 'y proximity'
+	});
+}
+
+/**
+ * Initialize GSAP-based features
+ */
+function initializeGSAP() {
+	if (typeof gsap === 'undefined') {
+		console.error('GSAP is not loaded!');
+		return;
+	}
+	
+	// Register plugin
+	gsap.registerPlugin(ScrollTrigger);
+	
+	// Configure ScrollTrigger
+	ScrollTrigger.config({
+		autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+		ignoreMobileResize: true
+	});
+	
+	// Setup all GSAP features
+	setupHashUpdates();
+	setupSectionAnimations();
+	setupFlyingTextAnimations();
+	setupScrollSnapBehavior();
+	
+	// Refresh ScrollTrigger
+	window.addEventListener('load', () => ScrollTrigger.refresh());
+	setTimeout(() => ScrollTrigger.refresh(), 500);
+}
+
+// ===================================
+// MAIN INITIALIZATION
+// ===================================
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Snap scrolling for sections
-    document.body.style.scrollBehavior = 'smooth';
-    document.documentElement.style.scrollBehavior = 'smooth';
-
-    // Create chromatic aberration layers for all section-inner elements
-    const allSectionInners = document.querySelectorAll('.section-inner');
-    allSectionInners.forEach(sectionInner => {
-        // Create a wrapper to hold the layers and the section-inner
-        const wrapper = document.createElement('div');
-        wrapper.style.position = 'relative';
-        wrapper.style.width = '100%';
-        wrapper.style.maxWidth = '900px';
-        wrapper.style.margin = '0 auto';
-        
-        // Create cyan layer (furthest back)
-        const cyanLayer = document.createElement('div');
-        cyanLayer.className = 'chromatic-layer cyan';
-        cyanLayer.setAttribute('data-layer', 'cyan');
-        
-        // Create magenta layer (middle)
-        const magentaLayer = document.createElement('div');
-        magentaLayer.className = 'chromatic-layer magenta';
-        magentaLayer.setAttribute('data-layer', 'magenta');
-        
-        // Wrap the section-inner
-        sectionInner.parentNode.insertBefore(wrapper, sectionInner);
-        wrapper.appendChild(cyanLayer);
-        wrapper.appendChild(magentaLayer);
-        wrapper.appendChild(sectionInner);
-    });
-
-    // Project view toggle
-    const carousel = document.getElementById('projects-carousel');
-    const btnList = document.getElementById('view-list');
-    const btnThumb = document.getElementById('view-thumb');
-    
-    if (btnList && btnThumb && carousel) {
-        btnList.addEventListener('click', () => {
-            carousel.classList.remove('view-thumb');
-            carousel.classList.add('view-list');
-        });
-        btnThumb.addEventListener('click', () => {
-            carousel.classList.remove('view-list');
-            carousel.classList.add('view-thumb');
-        });
-    }
-
-    // Project sorting (by title)
-    const sortBtn = document.getElementById('sort-btn');
-    if (sortBtn) {
-        sortBtn.addEventListener('click', () => {
-            const items = Array.from(carousel.querySelectorAll('.project-item'));
-            const sorted = items.sort((a, b) => {
-                return a.dataset.title.localeCompare(b.dataset.title);
-            });
-            sorted.forEach(item => carousel.appendChild(item));
-        });
-    }
-
-    // Check if GSAP is loaded
-    if (typeof gsap === 'undefined') {
-        console.error('GSAP is not loaded!');
-        return;
-    }
-
-    // GSAP ScrollTrigger stamp animation for sections
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Configure ScrollTrigger for better touch device support
-    ScrollTrigger.config({
-        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
-        ignoreMobileResize: true
-    });
-
-    // Get all sections (including landing for URL updates)
-    const allSections = gsap.utils.toArray('.section');
-
-    // Update URL hash when scrolling to sections
-    allSections.forEach((section) => {
-        ScrollTrigger.create({
-            trigger: section,
-            start: 'top center',
-            end: 'bottom center',
-            onEnter: () => {
-                const id = section.id;
-                if (id) {
-                    history.replaceState(null, null, '#' + id);
-                }
-            },
-            onEnterBack: () => {
-                const id = section.id;
-                if (id) {
-                    history.replaceState(null, null, '#' + id);
-                }
-            }
-        });
-    });
-
-    // Get all sections except the landing and full-width sections for animation
-    const sections = gsap.utils.toArray('.section:not(.landing):not(.full-width)');
-
-    // Better touch device detection that works for iPads in desktop mode
-    const isTouchDevice = (() => {
-        // Check for touch capability
-        const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        
-        // Check if device has coarse pointer (touch) or lacks hover capability
-        const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-        const lacksHover = window.matchMedia('(hover: none)').matches;
-        
-        // iPad in desktop mode: has touch AND lacks precise hover
-        const isProbablyIPad = hasTouch && (hasCoarsePointer || lacksHover || navigator.maxTouchPoints > 0);
-        
-        return isProbablyIPad || hasCoarsePointer || lacksHover;
-    })();
-    
-    console.log('Touch device detected:', isTouchDevice);
-
-    // Use IntersectionObserver for reliable scroll reveals
-    sections.forEach((section) => {
-        const sectionInner = section.querySelector('.section-inner');
-        
-        if (!sectionInner) return;
-        
-        if (isTouchDevice) {
-            // Simple animation for touch devices
-            gsap.set(sectionInner, {
-                opacity: 0,
-                y: 30,
-                transformOrigin: 'center center'
-            });
-        } else {
-            // Fancy stamp animation for desktop
-            gsap.set(sectionInner, {
-                y: -100,
-                scale: 0.85,
-                rotation: -3,
-                opacity: 0,
-                transformOrigin: 'center center'
-            });
-        }
-    });
-
-    // Create IntersectionObserver for section reveals
-    const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const section = entry.target;
-                const sectionInner = section.querySelector('.section-inner');
-                
-                if (!sectionInner) return;
-                
-                if (isTouchDevice) {
-                    // Simple fade in for touch devices
-                    gsap.to(sectionInner, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.6,
-                        ease: 'power2.out'
-                    });
-                } else {
-                    // Fancy stamp animation for desktop
-                    gsap.to(sectionInner, {
-                        y: 0,
-                        scale: 1,
-                        rotation: 0,
-                        opacity: 1,
-                        ease: 'back.out(1.7)',
-                        duration: 0.8
-                    });
-                    
-                    // Add shake effect on desktop
-                    gsap.delayedCall(0.5, () => {
-                        gsap.to(sectionInner, {
-                            keyframes: [
-                                { rotation: 1, duration: 0.05 },
-                                { rotation: -1, duration: 0.05 },
-                                { rotation: 0.5, duration: 0.05 },
-                                { rotation: 0, duration: 0.05 }
-                            ],
-                            ease: 'power2.out'
-                        });
-                    });
-                }
-                
-                // Unobserve after animating (animate only once)
-                sectionObserver.unobserve(section);
-            }
-        });
-    }, { 
-        threshold: 0.1,
-        rootMargin: '-10% 0px -10% 0px'
-    });
-
-    // Observe all sections
-    sections.forEach(section => sectionObserver.observe(section));
-
-    // Flying text animation for the animated section
-    const flyingTexts = gsap.utils.toArray('.flying-text');
-    const animatedSection = document.querySelector('#animated');
-    
-    if (flyingTexts.length > 0 && animatedSection) {
-        flyingTexts.forEach((text, index) => {
-            const speed = parseFloat(text.dataset.speed) || 1;
-            const isFromRight = text.style.transform.includes('translateX(100%)');
-            const delay = index * 0.05; // Reduced stagger for smoother experience
-            
-            // Set initial state
-            gsap.set(text, {
-                opacity: 0,
-                x: isFromRight ? '120vw' : '-120vw'
-            });
-            
-            // Create the flying animation
-            gsap.to(text, {
-                x: isFromRight ? '-120vw' : '120vw',
-                opacity: 1,
-                ease: 'none',
-                delay: delay,
-                scrollTrigger: {
-                    trigger: animatedSection,
-                    start: 'top 100%',
-                    end: 'bottom 0%',
-                    scrub: speed,
-                    refreshPriority: -1,
-                    invalidateOnRefresh: true,
-                    onUpdate: (self) => {
-                        // Fade in when entering, fade out when leaving
-                        const progress = self.progress;
-                        let opacity = 1;
-                        
-                        if (progress < 0.2) {
-                            opacity = progress / 0.2;
-                        } else if (progress > 0.8) {
-                            opacity = (1 - progress) / 0.2;
-                        }
-                        
-                        gsap.set(text, { opacity: opacity });
-                    }
-                }
-            });
-        });
-    }
-
-    // Disable scroll snap temporarily when in the animated section (desktop only)
-    if (animatedSection && !isTouchDevice) {
-        ScrollTrigger.create({
-            trigger: animatedSection,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            onEnter: () => {
-                document.body.style.scrollSnapType = 'none';
-            },
-            onLeave: () => {
-                document.body.style.scrollSnapType = 'y proximity';
-            },
-            onEnterBack: () => {
-                document.body.style.scrollSnapType = 'none';
-            },
-            onLeaveBack: () => {
-                document.body.style.scrollSnapType = 'y proximity';
-            }
-        });
-    }
-
-    // Refresh ScrollTrigger after everything loads to ensure accuracy
-    window.addEventListener('load', () => {
-        ScrollTrigger.refresh();
-    });
-
-    // Also refresh after a short delay to account for any late-loading content
-    setTimeout(() => {
-        ScrollTrigger.refresh();
-    }, 500);
+	// Enable smooth scrolling
+	document.body.style.scrollBehavior = 'smooth';
+	document.documentElement.style.scrollBehavior = 'smooth';
+	
+	// Initialize features
+	applyFilterToTitles();
+	createChromaticLayers();
+	setupProjectControls();
+	initializeGSAP();
 });
