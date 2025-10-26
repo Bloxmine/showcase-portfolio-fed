@@ -1,3 +1,4 @@
+/* Kudos to: https://codepen.io/fand/pen/EgGwjg for chromatic aberration effect. And https://opdiv.com/2021/02/28/torn-edges-css/ fo */
 /* ===================================
    IMPORTS
    =================================== */
@@ -49,7 +50,7 @@
 	--dark-black: #121212;
 	--white-background: #f6f6f6;
 	--cyan: #09fdfd;
-	--magenta: #fc0101;
+	--magenta: #eb01fc;
 	--yellow: #E3AA00;
 	--key: #0A0A0A;
 	
@@ -146,6 +147,7 @@ p {
 	align-items: center;
 	transition: transform 0.2s ease-out;
 	z-index: 3;
+	will-change: transform;
 	-webkit-clip-path: var(--torn-all-sides);
 	clip-path: var(--torn-all-sides);
 }
@@ -173,6 +175,7 @@ p {
 	transition: transform 0.2s ease-out;
 	-webkit-clip-path: var(--torn-all-sides);
 	clip-path: var(--torn-all-sides);
+	will-change: transform;
 }
 
 .chromatic-layer.cyan {
@@ -361,21 +364,25 @@ p {
 .about-media .social-links a {
 	color: var(--accent);
 	font-size: 1.6rem;
-	transition: color var(--transition);
+	transition: color 0.2s ease-in-out;
+		transform: scale(1);
 }
 
 .about-media .social-links a:hover {
 	color: #fff;
+	transform: scale(1.1);
 }
 
 .about-media .social-links img {
 	width: 64px;
 	height: 64px;
 	border: none;
+	transition: transform 0.2s ease-in-out;
 }
 
 .about-media .social-links a:hover img {
 	transform: rotate(5deg) scale(1.1);
+	transition: transform 0.2s ease-in-out;
 }
 
 /* ===================================
@@ -406,7 +413,6 @@ p {
 	margin: 0 0.5em;
 	border-radius: 0;
 	border: none;
-	box-shadow: 0 0 0 0.5em var(--yellow);
 	cursor: pointer;
 	position: relative;
 	background: white;
@@ -418,51 +424,6 @@ p {
 	.projects-controls button {
 		font-family: "Inter var", sans-serif;
 	}
-}
-
-.projects-controls button:hover {
-	color: #000;
-	background-color: #ebf8ff;
-	transform: rotate(-2deg);
-	transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.projects-controls button::before {
-	content: "";
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	box-shadow: 0 0 0 0.5em var(--cyan);
-	mix-blend-mode: multiply;
-	border-radius: 0;
-	border: none;
-	transform: rotate(1deg);
-	transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.projects-controls button::after {
-	content: "";
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	box-shadow: 0 0 0 0.5em var(--magenta);
-	mix-blend-mode: multiply;
-	border-radius: 0;
-	border: none;
-	transform: rotate(-1deg);
-	transition: all 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.projects-controls button:hover::before {
-	transform: rotate(-2deg) translateX(-0.2em);
-}
-
-.projects-controls button:hover::after {
-	transform: rotate(4deg) translateY(0.2em);
 }
 
 /* Carousel */
@@ -558,6 +519,7 @@ p {
 
 .project-info {
 	text-align: left;
+	text-overflow: ellipsis;
 	width: 100%;
 	padding: 0 1.5rem;
 	display: flex;
@@ -567,6 +529,7 @@ p {
 
 .project-info h3 {
 	margin: 0 0 0.75rem 0;
+	font-family: 'Intranet', Arial, sans-serif;
 	font-size: 1.4rem;
 	font-weight: 700;
 	color: var(--text);
@@ -576,6 +539,8 @@ p {
 .project-info p {
 	color: var(--muted);
 	font-size: 1rem;
+	letter-spacing: -0.01em;
+	text-overflow: inherit;
 	line-height: 1.6;
 	margin-bottom: 1.25rem;
 	flex-grow: 1;
@@ -597,69 +562,24 @@ p {
 	text-decoration: none;
 	font-weight: 900;
 	font-size: 0.9rem;
-	border-radius: 0;
+	border-radius: 24px;
 	border: none;
-	box-shadow: 0 0 0 0.5em var(--yellow);
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
 	cursor: pointer;
 	position: relative;
-	transition: all 175ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.project-links a:hover {
+	background: var(--accent);
+	color: #fff;
+	
 }
 
 @supports (font-variation-settings: normal) {
 	.project-links a {
 		font-family: "Inter var", sans-serif;
 	}
-}
-
-.project-links a:hover {
-	color: #000;
-	background-color: #ebf8ff;
-	transform: rotate(-2deg);
-	transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.project-links a:active {
-	transform: rotate(-2deg) scale(0.95);
-}
-
-.project-links a::before {
-	content: "";
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	box-shadow: 0 0 0 0.5em var(--cyan);
-	mix-blend-mode: multiply;
-	border-radius: 0;
-	border: none;
-	transform: rotate(1deg);
-	transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.project-links a::after {
-	content: "";
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	box-shadow: 0 0 0 0.5em var(--magenta);
-	mix-blend-mode: multiply;
-	border-radius: 0;
-	border: none;
-	transform: rotate(-1deg);
-	transition: all 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.project-links a:hover::before {
-	transform: rotate(-2deg) translateX(-0.2em);
-}
-
-.project-links a:hover::after {
-	transform: rotate(4deg) translateY(0.2em);
 }
 
 /* ===================================
@@ -759,6 +679,23 @@ p {
 	margin-bottom: 1rem;
 }
 
+.contact a {
+	color: var(--accent);
+	font-size: 1.6rem;
+	transition: transform var(--transition);
+	display: inline-block;
+}
+
+.contact a:hover {
+	transform: rotate(5deg) scale(1.1);
+}
+
+.contact a img {
+	width: 64px;
+	height: 64px;
+	border: none;
+}
+
 .contextBox {
 	max-width: 1000px;
 	max-height: 600px;
@@ -773,6 +710,24 @@ p {
 	-webkit-clip-path: var(--torn-all-sides);
 	clip-path: var(--torn-all-sides);
 }
+.contact-button {
+	margin-top: 2rem;
+	border: none;
+}
+
+.contact-button img {
+	width: 64px;
+	height: 64px;
+	object-fit: contain;
+	transition: transform var(--transition);
+}
+
+.contact-button:hover img {
+	transform: scale(1.1);
+}
+.contact-button:active img {
+	transform: scale(0.95);
+}
 
 /* ===================================
    FOOTER
@@ -780,7 +735,8 @@ p {
 .footer {
 	background: #111;
 	color: var(--muted);
-	padding: 2rem 0 1rem 0;
+	padding: 1.5rem 2rem;
+	margin-top: 2rem;
 	text-align: center;
 	font-size: 1rem;
 	letter-spacing: 0.05em;

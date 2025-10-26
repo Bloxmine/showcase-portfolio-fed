@@ -1,5 +1,9 @@
 // ===================================
-// PORTFOLIO INTERACTIVE SCRIPT
+// Author: Hein Dijstelbloem
+// Date: 2025-10-26
+// Description: Interactive script for portfolio website with chromatic aberration and GSAP animations
+// Dependencies: GSAP, ScrollTrigger
+// Kudos to: https://codepen.io/fand/pen/EgGwjg for chromatic aberration.
 // ===================================
 
 // ===================================
@@ -79,20 +83,100 @@ function getChromaticLayers(sectionInner) {
 }
 
 // ===================================
-// CHROMATIC ABERRATION EFFECT
+// CHROMATIC ABERRATION & ROTATION EFFECTS
 // ===================================
 
+// Cache DOM elements and animation setters
+let cachedSectionInners = [];
+let cachedChromaticLayers = [];
+let redOffsetSetter = null;
+let blueOffsetSetter = null;
+let animationFrameId = null;
+let mouseX = 0;
+let mouseY = 0;
+
 /**
- * Update chromatic aberration based on mouse position
+ * Initialize cached DOM references and GSAP quickSetters
+ */
+function initializePerformanceCache() {
+	const redOffset = document.getElementById('redOffset');
+	const blueOffset = document.getElementById('blueOffset');
+	
+	// Cache SVG offset elements for direct attribute manipulation
+	if (redOffset && blueOffset) {
+		redOffsetSetter = {
+			element: redOffset,
+			dx: (val) => redOffset.setAttribute('dx', val),
+			dy: (val) => redOffset.setAttribute('dy', val)
+		};
+		blueOffsetSetter = {
+			element: blueOffset,
+			dx: (val) => blueOffset.setAttribute('dx', val),
+			dy: (val) => blueOffset.setAttribute('dy', val)
+		};
+	}
+	
+	// Cache section elements and their chromatic layers
+	cachedSectionInners = Array.from(document.querySelectorAll('.section-inner'));
+	cachedChromaticLayers = cachedSectionInners.map(sectionInner => {
+		const wrapper = sectionInner.closest('.chromatic-wrapper') || sectionInner.parentElement;
+		return {
+			element: sectionInner,
+			cyan: wrapper?.querySelector('.chromatic-layer.cyan'),
+			magenta: wrapper?.querySelector('.chromatic-layer.magenta')
+		};
+	});
+}
+
+/**
+ * Update chromatic aberration effect based on mouse position
+ * @param {number} x - Normalized X position (-1 to 1)
+ * @param {number} y - Normalized Y position (-1 to 1)
  */
 function updateChromaticAberration(x, y) {
-	const { maxOffset } = CONFIG.chromaticAberration;
-	
-	elements.redOffset.setAttribute('dx', x * maxOffset);
-	elements.redOffset.setAttribute('dy', y * maxOffset);
-	elements.blueOffset.setAttribute('dx', -x * maxOffset);
-	elements.blueOffset.setAttribute('dy', -y * maxOffset);
+	if (redOffsetSetter && blueOffsetSetter) {
+		const offsetX = x * CONFIG.chromaticAberration.maxOffset;
+		const offsetY = y * CONFIG.chromaticAberration.maxOffset;
+		
+		redOffsetSetter.dx(offsetX);
+		redOffsetSetter.dy(offsetY);
+		blueOffsetSetter.dx(-offsetX);
+		blueOffsetSetter.dy(-offsetY);
+	}
 }
+
+/**
+ * Get chromatic aberration layers for a section
+ * @param {HTMLElement} element - The section element
+ * @returns {Object} Object containing cyan and magenta layers
+ */
+function getChromaticLayers(element) {
+	const wrapper = element.closest('.chromatic-wrapper') || element.parentElement;
+	return {
+		cyan: wrapper?.querySelector('.chromatic-layer.cyan'),
+		magenta: wrapper?.querySelector('.chromatic-layer.magenta')
+	};
+}
+
+/**
+ * Throttled animation update using requestAnimationFrame
+ */
+function updateAnimations() {
+	updateChromaticAberration(mouseX, mouseY);
+	applyRotationEffects(mouseX, mouseY);
+	animationFrameId = null;
+}
+
+// Mouse movement tracking with requestAnimationFrame throttling
+document.addEventListener('mousemove', (e) => {
+	mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+	mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+	
+	// Only request new frame if one isn't already pending
+	if (!animationFrameId) {
+		animationFrameId = requestAnimationFrame(updateAnimations);
+	}
+});
 
 /**
  * Reset chromatic aberration to default
@@ -112,22 +196,20 @@ function resetChromaticAberration() {
 
 /**
  * Apply rotation effects to section and chromatic layers
+ * Uses cached DOM references for better performance
  */
 function applyRotationEffects(x, y) {
 	const { max, cyanMultiplier, magentaMultiplier, cyanOffset, magentaOffset } = CONFIG.rotation;
 	const { duration, ease } = CONFIG.animation;
 	const rotation = x * max;
 	
-	const sectionInners = document.querySelectorAll('.section-inner');
-	sectionInners.forEach(sectionInner => {
+	cachedChromaticLayers.forEach(({ element, cyan, magenta }) => {
 		// Rotate main section
-		animateElement(sectionInner, { rotation, duration, ease });
+		animateElement(element, { rotation, duration, ease });
 		
 		// Rotate chromatic layers
-		const layers = getChromaticLayers(sectionInner);
-		
-		if (layers.cyan) {
-			animateElement(layers.cyan, {
+		if (cyan) {
+			animateElement(cyan, {
 				rotation: rotation * cyanMultiplier,
 				x: -x * cyanOffset,
 				y: -y * (cyanOffset / 2),
@@ -136,8 +218,8 @@ function applyRotationEffects(x, y) {
 			});
 		}
 		
-		if (layers.magenta) {
-			animateElement(layers.magenta, {
+		if (magenta) {
+			animateElement(magenta, {
 				rotation: rotation * magentaMultiplier,
 				x: x * magentaOffset,
 				y: y * (magentaOffset / 2),
@@ -150,24 +232,22 @@ function applyRotationEffects(x, y) {
 
 /**
  * Reset all rotation effects
+ * Uses cached DOM references for better performance
  */
 function resetRotationEffects() {
 	const { resetDuration, ease } = CONFIG.animation;
 	
-	const sectionInners = document.querySelectorAll('.section-inner');
-	sectionInners.forEach(sectionInner => {
+	cachedChromaticLayers.forEach(({ element, cyan, magenta }) => {
 		// Reset main section
-		animateElement(sectionInner, { rotation: 0, duration: resetDuration, ease });
+		animateElement(element, { rotation: 0, duration: resetDuration, ease });
 		
 		// Reset chromatic layers
-		const layers = getChromaticLayers(sectionInner);
-		
-		if (layers.cyan) {
-			animateElement(layers.cyan, { rotation: 0, x: 0, y: 0, duration: resetDuration, ease });
+		if (cyan) {
+			animateElement(cyan, { rotation: 0, x: 0, y: 0, duration: resetDuration, ease });
 		}
 		
-		if (layers.magenta) {
-			animateElement(layers.magenta, { rotation: 0, x: 0, y: 0, duration: resetDuration, ease });
+		if (magenta) {
+			animateElement(magenta, { rotation: 0, x: 0, y: 0, duration: resetDuration, ease });
 		}
 	});
 }
@@ -175,14 +255,6 @@ function resetRotationEffects() {
 // ===================================
 // MOUSE EVENT HANDLERS
 // ===================================
-
-document.addEventListener('mousemove', (e) => {
-	const x = (e.clientX / window.innerWidth) * 2 - 1;
-	const y = (e.clientY / window.innerHeight) * 2 - 1;
-	
-	updateChromaticAberration(x, y);
-	applyRotationEffects(x, y);
-});
 
 document.addEventListener('mouseleave', () => {
 	resetChromaticAberration();
@@ -481,6 +553,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Initialize features
 	applyFilterToTitles();
 	createChromaticLayers();
+	initializePerformanceCache(); // Cache DOM elements after chromatic layers are created
 	setupProjectControls();
 	initializeGSAP();
 });
