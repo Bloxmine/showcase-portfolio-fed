@@ -262,6 +262,96 @@ document.addEventListener('mouseleave', () => {
 });
 
 // ===================================
+// DIAGONAL CANVAS ANIMATION
+// ===================================
+
+/**
+ * Setup and animate diagonal background text using Canvas
+ * Much more efficient than DOM-based animation
+ */
+function setupDiagonalCanvas() {
+	const canvas = document.getElementById('diagonal-canvas');
+	if (!canvas) return;
+	
+	const ctx = canvas.getContext('2d');
+	const section = canvas.closest('.landing');
+	
+	// Text lines configuration
+	const lines = [
+		{ words: ['DEVELOPER', 'CREATIVE', 'DESIGNER', 'CODER'], yOffset: -0.1, duration: 25, phase: 0 },
+		{ words: ['FRONTEND', 'FULLSTACK', 'JAVASCRIPT', 'REACT'], yOffset: 0.2, duration: 22, phase: -2 },
+		{ words: ['UI/UX', 'PORTFOLIO', 'WEBSITE', 'INTERACTIVE'], yOffset: 0.5, duration: 28, phase: -4 },
+		{ words: ['MODERN', 'RESPONSIVE', 'DYNAMIC', 'ANIMATION'], yOffset: 0.8, duration: 24, phase: -6 }
+	];
+	
+	// Canvas setup
+	function resizeCanvas() {
+		const rect = section.getBoundingClientRect();
+		canvas.width = rect.width;
+		canvas.height = rect.height;
+	}
+	
+	resizeCanvas();
+	window.addEventListener('resize', resizeCanvas);
+	
+	// Animation variables
+	const rotation = -15 * Math.PI / 180; // -15 degrees in radians
+	const fontSize = 64; // 4rem equivalent
+	const wordSpacing = 48; // 3rem spacing between words
+	let startTime = Date.now();
+	
+	// Animation loop
+	function animate() {
+		const currentTime = (Date.now() - startTime) / 1000; // Time in seconds
+		
+		// Clear canvas
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		
+		// Set text properties
+		ctx.font = `900 ${fontSize}px 'Intranet', Arial, sans-serif`;
+		ctx.fillStyle = 'rgba(128, 128, 128, 0.08)';
+		ctx.textBaseline = 'middle';
+		
+		// Draw each line
+		lines.forEach(line => {
+			const cycleTime = (currentTime + line.phase) % line.duration;
+			const progress = cycleTime / line.duration;
+			
+			// Calculate position (moving from left to right diagonally)
+			const startX = -canvas.width;
+			const endX = canvas.width * 2;
+			const startY = canvas.height * 0.5;
+			const endY = -canvas.height * 0.5;
+			
+			const x = startX + (endX - startX) * progress;
+			const y = canvas.height * line.yOffset + (endY - startY) * progress;
+			
+			// Save context for rotation
+			ctx.save();
+			ctx.translate(x, y);
+			ctx.rotate(rotation);
+			
+			// Draw repeated words to fill the line
+			let currentX = 0;
+			const repeatedWords = [...line.words, ...line.words]; // Repeat words to ensure coverage
+			
+			repeatedWords.forEach(word => {
+				ctx.fillText(word, currentX, 0);
+				const wordWidth = ctx.measureText(word).width;
+				currentX += wordWidth + wordSpacing;
+			});
+			
+			ctx.restore();
+		});
+		
+		requestAnimationFrame(animate);
+	}
+	
+	// Start animation
+	animate();
+}
+
+// ===================================
 // INITIALIZATION
 // ===================================
 
@@ -555,5 +645,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	createChromaticLayers();
 	initializePerformanceCache(); // Cache DOM elements after chromatic layers are created
 	setupProjectControls();
+	setupDiagonalCanvas(); // Setup canvas-based diagonal background text
 	initializeGSAP();
 });
