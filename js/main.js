@@ -276,15 +276,19 @@ function setupDiagonalCanvas() {
 	const ctx = canvas.getContext('2d');
 	const section = canvas.closest('.landing');
 	
-	// Text lines configuration
+	// diagonal lines
 	const lines = [
 		{ words: ['DEVELOPER', 'CREATIVE', 'DESIGNER', 'CODER'], yOffset: -0.1, duration: 25, phase: 0 },
-		{ words: ['FRONTEND', 'FULLSTACK', 'JAVASCRIPT', 'REACT'], yOffset: 0.2, duration: 22, phase: -2 },
+		{ words: ['FRONTEND', 'FULLSTACK', 'JAVASCRIPT', 'NEXT'], yOffset: 0.2, duration: 22, phase: -2 },
 		{ words: ['UI/UX', 'PORTFOLIO', 'WEBSITE', 'INTERACTIVE'], yOffset: 0.5, duration: 28, phase: -4 },
-		{ words: ['MODERN', 'RESPONSIVE', 'DYNAMIC', 'ANIMATION'], yOffset: 0.8, duration: 24, phase: -6 }
+		{ words: ['MODERN', 'RESPONSIVE', 'DYNAMIC', 'ANIMATED'], yOffset: 0.8, duration: 24, phase: -6 },
+		{ words: ['BUZZWORDS', 'AWESOME', 'SYNERGY', 'EPIC'], yOffset: 1.1, duration: 26, phase: -8 },
+		{ words: ['EVEN', 'MORE', 'BUZZ', 'WORDS'], yOffset: 1.4, duration: 30, phase: -10 },
+		{ words: ['SEAMLESS', 'LOOP', 'ANIMATION', 'CANVAS'], yOffset: 1.7, duration: 32, phase: -12 },
+		{ words: ['ADDITIONAL', 'WORDS', 'FOR', 'VARIETY'], yOffset: 2.0, duration: 34, phase: -14 }
 	];
 	
-	// Canvas setup
+	// canvas setup
 	function resizeCanvas() {
 		const rect = section.getBoundingClientRect();
 		canvas.width = rect.width;
@@ -294,30 +298,36 @@ function setupDiagonalCanvas() {
 	resizeCanvas();
 	window.addEventListener('resize', resizeCanvas);
 	
-	// Animation variables
+	// animation variables
 	const rotation = -15 * Math.PI / 180; // -15 degrees in radians
 	const fontSize = 64; // 4rem equivalent
-	const wordSpacing = 48; // 3rem spacing between words
+	const wordSpacing = 64; // 4rem spacing between words
 	let startTime = Date.now();
+	const linePatterns = lines.map(line => {
+		ctx.font = `900 ${fontSize}px 'Intranet', Arial, sans-serif`;
+		let totalWidth = 0;
+		const widths = line.words.map(word => {
+			const width = ctx.measureText(word).width;
+			totalWidth += width + wordSpacing;
+			return width;
+		});
+		return { totalWidth, widths };
+	});
 	
-	// Animation loop
+	// animation loop
 	function animate() {
-		const currentTime = (Date.now() - startTime) / 1000; // Time in seconds
-		
-		// Clear canvas
+		const currentTime = (Date.now() - startTime) / 1000;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		
-		// Set text properties
 		ctx.font = `900 ${fontSize}px 'Intranet', Arial, sans-serif`;
 		ctx.fillStyle = 'rgba(128, 128, 128, 0.08)';
 		ctx.textBaseline = 'middle';
 		
-		// Draw each line
-		lines.forEach(line => {
+		lines.forEach((line, lineIndex) => {
 			const cycleTime = (currentTime + line.phase) % line.duration;
 			const progress = cycleTime / line.duration;
+			const pattern = linePatterns[lineIndex];
 			
-			// Calculate position (moving from left to right diagonally)
+			// calculate position (moving from left to right diagonally)
 			const startX = -canvas.width;
 			const endX = canvas.width * 2;
 			const startY = canvas.height * 0.5;
@@ -326,20 +336,26 @@ function setupDiagonalCanvas() {
 			const x = startX + (endX - startX) * progress;
 			const y = canvas.height * line.yOffset + (endY - startY) * progress;
 			
-			// Save context for rotation
+			// save context for rotation
 			ctx.save();
 			ctx.translate(x, y);
 			ctx.rotate(rotation);
 			
-			// Draw repeated words to fill the line
-			let currentX = 0;
-			const repeatedWords = [...line.words, ...line.words]; // Repeat words to ensure coverage
+			// calculate how much space we need to fill (with buffer for rotation)
+			const bufferSpace = Math.max(canvas.width, canvas.height) * 2;
 			
-			repeatedWords.forEach(word => {
-				ctx.fillText(word, currentX, 0);
-				const wordWidth = ctx.measureText(word).width;
-				currentX += wordWidth + wordSpacing;
-			});
+			// Draw repeated words to fill the line seamlessly
+			// Use modulo to create seamless loop - offset based on pattern width
+			const patternOffset = (progress * pattern.totalWidth) % pattern.totalWidth;
+			let currentX = -patternOffset;
+			const stopX = bufferSpace;
+			
+			while (currentX < stopX) {
+				line.words.forEach((word, wordIndex) => {
+					ctx.fillText(word, currentX, 0);
+					currentX += pattern.widths[wordIndex] + wordSpacing;
+				});
+			}
 			
 			ctx.restore();
 		});
