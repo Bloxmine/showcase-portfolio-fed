@@ -29,6 +29,19 @@
 	font-style: normal;
 }
 
+@font-face {
+	font-family: 'PPSupplySans-Regular';
+	src: url('../fonts/PPSupplySans-Regular.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'PPNikkeiPacific-Regular';
+	src: url('../fonts/PPNikkeiPacific-Regular.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}
 /* ===================================
    CSS VARIABLES
    =================================== */
@@ -37,6 +50,8 @@
 	--font-flying-text: 'Intranet', Arial, sans-serif;
 	--font-h2: 'MisterFirley', Arial, sans-serif;
 	--font-p: 'Oswald', Arial, sans-serif;
+	--font-carousel: 'PPSupplySans-Regular', Arial, sans-serif;
+	--font-carousel-text: 'PPNikkeiPacific-Regular', Arial, sans-serif;
 	
 	/* Colors */
 	--primary-bg: #fff;
@@ -486,29 +501,87 @@ p {
 }
 
 /* Project Items */
+.project-item-wrapper {
+	position: relative;
+	min-width: 320px;
+	max-width: 360px;
+	flex: 0 0 320px;
+	height: 100%;
+	overflow: visible;
+}
+
 .project-item {
-	background: var(--secondary-bg);
+	background: var(--key);
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	border: 2px solid white;
 	border-radius: 8px;
-	min-width: 240px;
-	max-width: 280px;
-	flex: 0 0 240px;
+	width: 100%;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 0 0 1.5rem 0;
+	padding: 0;
 	transition: transform var(--transition), box-shadow var(--transition);
 	cursor: grab;
+	position: relative;
+	z-index: 3;
+}
+
+.project-item-cyan,
+.project-item-magenta {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: 3px solid;
+	border-radius: 8px;
+	opacity: 0;
+	transition: opacity var(--transition), transform var(--transition);
+	pointer-events: none;
+}
+
+.project-item-cyan {
+	border-color: var(--cyan);
+	background-color: rgba(9, 253, 253, 1);
+	z-index: 1;
+}
+
+.project-item-magenta {
+	border-color: var(--magenta);
+	background-color: rgba(235, 1, 252, 1);
+	z-index: 2;
+}
+
+.project-item-wrapper:hover .project-item-cyan {
+	opacity: 1;
+	transform: translate(-12px, -12px) scale(1.05) rotate(2deg);
+}
+
+.project-item-wrapper:hover .project-item-magenta {
+	opacity: 1;
+	transform: translate(12px, 12px) scale(1.05) rotate(-2deg);
+}
+
+.project-item-wrapper:hover .project-item {
+	transform: scale(1.05);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.carousel.view-list .project-item-wrapper {
+	max-width: 800px;
+	min-width: 400px;
+	width: 100%;
+	flex: 1 1 100%;
 }
 
 .carousel.view-list .project-item {
 	flex-direction: row;
-	max-width: 650px;
-	min-width: 300px;
 	width: 100%;
 	align-items: stretch;
 	padding: 1.5rem 0 1.5rem 2.5rem;
 	border-radius: 12px;
+	border: 2px solid white;
 }
 
 .project-item img {
@@ -518,13 +591,9 @@ p {
 	border: none;
 	border-radius: 8px 8px 0 0;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-	transition: transform var(--transition), box-shadow var(--transition);
 	display: block;
-}
-
-.project-item:hover img {
-	transform: scale(1.02);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+	position: relative;
+	z-index: 1;
 }
 
 .carousel.view-list .project-item img {
@@ -538,15 +607,18 @@ p {
 	text-align: left;
 	text-overflow: ellipsis;
 	width: 100%;
-	padding: 0 2.5rem 1.5rem 2.5rem;
+	padding: 0 2.5rem 0 2.5rem;
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
+	justify-content: space-between;
+	position: relative;
+	z-index: 1;
 }
 
 .project-info h3 {
-	font-family: 'Intranet', Arial, sans-serif;
-	font-size: 1rem;
+	font-family: var(--font-carousel);
+	font-size: 2rem;
 	font-weight: 700;
 	color: var(--text);
 	letter-spacing: -0.02em;
@@ -555,36 +627,37 @@ p {
 
 .project-info p {
 	color: var(--muted);
+	font-family: var(--font-carousel-text);
 	font-size: 1rem;
 	letter-spacing: -0.01em;
 	text-overflow: inherit;
 	line-height: 1.6;
 	margin-bottom: 1.25rem;
-	flex-grow: 1;
 	margin-left: 10px;
 }
 
 .project-links {
 	display: flex;
-	gap: 0;
+	gap: 0.75rem;
 	margin-top: auto;
-	margin-left: 0;
-	margin-right: 0;
-	margin-bottom: 0;
+	margin-left: 1rem;
+	margin-right: 1rem;
+	margin-bottom: 1rem;
 	flex-wrap: nowrap;
-	border-top: 2px solid var(--section-bg);
+	border-top: none;
+	font-family: var(--font-carousel);
 }
 
 .project-links a {
-	font-family: "Inter", sans-serif;
 	display: inline-block;
 	padding: 0.85em 1.5em;
-	background: white;
-	color: #000;
+	background: var(--dark-black);
+	color: #fff;
 	text-decoration: none;
 	font-weight: 900;
-	font-size: 0.9rem;
-	border: none;
+	font-size: 1.1rem;
+	border: 2px solid white;
+	border-radius: 6px;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
 	cursor: pointer;
@@ -594,13 +667,12 @@ p {
 }
 
 .project-links a:not(:last-child) {
-	border-right: 2px solid var(--section-bg);
+	border-right: none;
 }
 
 .project-links a:hover {
 	background: var(--accent);
-	color: #fff;
-	
+	color: var(--dark-black);
 }
 
 .carousel.view-list .project-info {
@@ -625,11 +697,6 @@ p {
 	border-bottom: none;
 }
 
-@supports (font-variation-settings: normal) {
-	.project-links a {
-		font-family: "Inter var", sans-serif;
-	}
-}
 
 /* ===================================
    TECH STACK SECTION

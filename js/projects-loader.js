@@ -4,10 +4,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const carousel = document.getElementById('projects-carousel');
     const sortSelect = document.getElementById('sort-select');
     if (!carousel) return;
-
-    // Helper to fetch all JSON files in the folder
     async function fetchProjectFiles() {
-        // List of known project files (in a real server, you'd fetch the directory listing)
         const files = [
             'gifcursors.json',
             'threejs.json',
@@ -31,15 +28,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         );
         return projects.filter(Boolean);
     }
-
-    // Render project items
     function renderProjects(projects, sortType = 'order') {
         let sorted = [...projects];
         if (sortType === 'alpha') {
             sorted.sort((a, b) => a.title.localeCompare(b.title));
         } else if (sortType === 'date') {
             sorted.sort((a, b) => {
-                // Newest first
                 return new Date(b.date || 0) - new Date(a.date || 0);
             });
         } else {
@@ -47,6 +41,19 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
         carousel.innerHTML = '';
         sorted.forEach(project => {
+            // Create wrapper for chromatic effect
+            const wrapper = document.createElement('div');
+            wrapper.className = 'project-item-wrapper';
+            
+            // Create cyan layer
+            const cyanLayer = document.createElement('div');
+            cyanLayer.className = 'project-item-cyan';
+            
+            // Create magenta layer
+            const magentaLayer = document.createElement('div');
+            magentaLayer.className = 'project-item-magenta';
+            
+            // Create main project item
             const item = document.createElement('div');
             item.className = 'project-item';
             item.dataset.title = project.title;
@@ -56,12 +63,18 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <h3>${project.title}</h3>
                     <p>${project.description}</p>
                     <div class="project-links">
-                        ${project.links.github ? `<a href="${project.links.github}" target="_blank" rel="noopener">GitHub</a>` : ''}
-                        ${project.links.demo ? `<a href="${project.links.demo}" target="_blank" rel="noopener">Demo</a>` : ''}
+                        ${project.links.demo ? `<a href="${project.links.demo}" target="_blank" rel="noopener">DEMO</a>` : ''}
+                        ${project.links.github ? `<a href="${project.links.github}" target="_blank" rel="noopener">REPO</a>` : ''}
                     </div>
                 </div>
             `;
-            carousel.appendChild(item);
+            
+            // Append layers to wrapper
+            wrapper.appendChild(cyanLayer);
+            wrapper.appendChild(magentaLayer);
+            wrapper.appendChild(item);
+            
+            carousel.appendChild(wrapper);
         });
     }
 

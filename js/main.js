@@ -343,9 +343,13 @@ function setupProjectControls() {
 	// Project sorting
 	if (sortBtn && carousel) {
 		sortBtn.addEventListener('click', () => {
-			const items = Array.from(carousel.querySelectorAll('.project-item'));
-			const sorted = items.sort((a, b) => a.dataset.title.localeCompare(b.dataset.title));
-			sorted.forEach(item => carousel.appendChild(item));
+			const wrappers = Array.from(carousel.querySelectorAll('.project-item-wrapper'));
+			const sorted = wrappers.sort((a, b) => {
+				const titleA = a.querySelector('.project-item').dataset.title;
+				const titleB = b.querySelector('.project-item').dataset.title;
+				return titleA.localeCompare(titleB);
+			});
+			sorted.forEach(wrapper => carousel.appendChild(wrapper));
 		});
 	}
 }
@@ -476,8 +480,6 @@ function initializeGSAP() {
 	// Setup all GSAP features
 	setupHashUpdates();
 	setupSectionAnimations();
-	setupFlyingTextAnimations();
-	setupScrollSnapBehavior();
 	
 	// Refresh ScrollTrigger
 	window.addEventListener('load', () => ScrollTrigger.refresh());
@@ -498,6 +500,5 @@ document.addEventListener('DOMContentLoaded', function () {
 	createChromaticLayers();
 	initializePerformanceCache(); // Cache DOM elements after chromatic layers are created
 	setupProjectControls();
-	setupDiagonalCanvas(); // Setup canvas-based diagonal background text
 	initializeGSAP();
 });

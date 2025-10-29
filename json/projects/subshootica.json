@@ -2,7 +2,7 @@
   "id": "subshootica",
   "title": "Subshootica",
     "date": "2023-11-15",
-  "description": "Subshootica is a game I have been working on for a little while. It's a schmup with GameBoy style graphics. Find your way through the sea of green and live beneath the waves as you defeat the evil Takoyaki Clan with your trusty green submarine!",
+  "description": "Subshootica is a schmup with GameBoy style graphics. Find your way through the sea of green and live beneath the waves as you defeat the evil Takoyaki Clan with your trusty green submarine!",
   "image": "/images/carousel/subshootica.jpg",
   "links": {
     "demo": "/subshootica.html",
