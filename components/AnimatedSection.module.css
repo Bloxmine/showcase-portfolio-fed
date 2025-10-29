@@ -1,0 +1,110 @@
+.tallSection {
+	min-height: 200vh;
+	position: relative;
+	overflow: hidden;
+	scroll-snap-align: start;
+	background: var(--section-bg);
+	-webkit-clip-path: var(--torn-top-bottom);
+	clip-path: var(--torn-top-bottom);
+	min-height: 250vh;
+}
+
+.textFlyingContainer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	overflow: visible;
+}
+
+.textFlyingBy {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+.flyingText {
+	position: absolute;
+	font-family: var(--font-flying-text);
+	font-size: clamp(2rem, 8vw, 6rem);
+	font-weight: 700;
+	color: var(--text);
+	white-space: nowrap;
+	pointer-events: none;
+	opacity: 1;
+	will-change: transform;
+	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	backface-visibility: hidden;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Odd children: Left to Right */
+.flyingText:nth-child(1) { 
+	top: 5%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 0s;
+}
+.flyingText:nth-child(3) { 
+	top: 25%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 2s;
+}
+.flyingText:nth-child(5) { 
+	top: 45%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 4s;
+}
+.flyingText:nth-child(7) { 
+	top: 65%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 6s;
+}
+.flyingText:nth-child(9) { 
+	top: 85%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 8s;
+}
+
+/* Even children: Right to Left */
+.flyingText:nth-child(2) { 
+	top: 15%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 1s;
+}
+.flyingText:nth-child(4) { 
+	top: 35%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 3s;
+}
+.flyingText:nth-child(6) { 
+	top: 55%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 5s;
+}
+.flyingText:nth-child(8) { 
+	top: 75%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 7s;
+}
+
+@media (max-width: 768px) {
+	.tallSection {
+		min-height: 150vh;
+	}
+	
+	.flyingText {
+		font-size: clamp(1.5rem, 6vw, 4rem);
+	}
+}

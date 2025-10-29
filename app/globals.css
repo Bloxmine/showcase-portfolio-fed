@@ -1,0 +1,264 @@
+/* Kudos to: https://codepen.io/fand/pen/EgGwjg for chromatic aberration effect. And https://opdiv.com/2021/02/28/torn-edges-css/ */
+/* ===================================
+   IMPORTS
+   =================================== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url("https://rsms.me/inter/inter.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===================================
+   CUSTOM FONTS
+   =================================== */
+@font-face {
+	font-family: 'Intranet';
+	src: url('/fonts/IntraNet.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'MisterFirley';
+	src: url('/fonts/MisterFirley.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Oswald';
+	src: url('/fonts/Oswald-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* ===================================
+   CSS VARIABLES
+   =================================== */
+:root {
+	/* Fonts */
+	--font-flying-text: 'Intranet', Arial, sans-serif;
+	--font-h2: 'MisterFirley', Arial, sans-serif;
+	--font-p: 'Oswald', Arial, sans-serif;
+	
+	/* Colors */
+	--primary-bg: #fff;
+	--section-text: #f5f5f5;
+	--section-bg: #181818;
+	--secondary-bg: #232323;
+	--accent: #ffffff;
+	--text: #f5f5f5;
+	--muted: #ffffff;
+	--light-black: #1a1a1a;
+	--dark-black: #121212;
+	--white-background: #f6f6f6;
+	--cyan: #09fdfd;
+	--magenta: #eb01fc;
+	--yellow: #E3AA00;
+	--key: #0A0A0A;
+	
+	/* Layout */
+	--section-padding: 80px 0;
+	--transition: 0.3s cubic-bezier(.4,0,.2,1);
+	
+	/* Clip Paths - Torn Edge Effects */
+	--torn-left-clip-path: polygon(100% 0%, 99.8% 1%, 100% 2%, 99.7% 3%, 100% 4%, 99.9% 5%, 100% 6%, 99.8% 7%, 100% 8%, 99.6% 9%, 100% 10%, 99.9% 11%, 100% 12%, 99.8% 13%, 100% 14%, 99.7% 15%, 100% 16%, 99.9% 17%, 99.8% 17%, 100% 18%, 100% 19%, 99.6% 20%, 99.9% 21%, 100% 22%, 99.5% 23%, 99.8% 24%, 100% 25%, 99.7% 26%, 99.9% 27%, 100% 28%, 99.8% 29%, 99.6% 30%, 100% 31%, 99.9% 32%, 99.7% 33%, 100% 34%, 99.8% 35%, 99.9% 36%, 100% 37%, 99.8% 38%, 100% 39%, 99.5% 40%, 99.7% 41%, 100% 42%, 99.6% 43%, 99.9% 44%, 99.8% 45%, 100% 46%, 99.7% 47%, 100% 48%, 99.9% 49%, 99.6% 50%, 100% 50%, 99.7% 51%, 99.8% 52%, 100% 53%, 99.9% 54%, 100% 55%, 99.8% 56%, 100% 57%, 99.6% 58%, 99.7% 59%, 100% 60%, 99.9% 61%, 99.8% 62%, 99.6% 63%, 100% 64%, 99.7% 65%, 100% 66%, 99.9% 67%, 99.5% 68%, 99.8% 69%, 100% 70%, 99.7% 71%, 99.9% 72%, 100% 73%, 99.8% 74%, 100% 75%, 99.6% 76%, 99.9% 77%, 100% 78%, 99.8% 79%, 100% 80%, 99.7% 81%, 100% 82%, 99.9% 83%, 99.8% 83%, 100% 84%, 99.6% 85%, 99.9% 86%, 100% 87%, 99.7% 88%, 100% 89%, 99.8% 90%, 100% 91%, 99.9% 92%, 100% 93%, 99.8% 94%, 100% 95%, 99.6% 96%, 100% 97%, 99.7% 98%, 100% 99%, 99.9% 100%, calc(100% + 1px) 100%, calc(100% + 1px) 0%);
+	
+	--torn-right-clip-path: polygon(100% 0%, 99.8% 1%, 100% 2%, 99.6% 3%, 100% 4%, 99.9% 5%, 100% 6%, 99.5% 7%, 100% 8%, 99.7% 9%, 99.8% 10%, 100% 11%, 99.9% 12%, 99.6% 13%, 100% 14%, 99.8% 15%, 100% 16%, 99.7% 17%, 99.9% 17%, 100% 18%, 99.6% 19%, 99.5% 20%, 100% 21%, 99.8% 22%, 99.9% 23%, 100% 24%, 99.7% 25%, 100% 26%, 99.8% 27%, 100% 28%, 99.9% 29%, 100% 30%, 99.6% 31%, 99.5% 32%, 100% 33%, 99.7% 34%, 100% 35%, 99.8% 36%, 100% 37%, 99.5% 38%, 99.9% 39%, 99.6% 40%, 100% 41%, 99.8% 42%, 99.7% 43%, 100% 44%, 99.9% 45%, 100% 46%, 99.8% 47%, 99.6% 48%, 100% 49%, 99.7% 50%, 99.9% 50%, 100% 51%, 99.8% 52%, 100% 53%, 99.6% 54%, 100% 55%, 99.9% 56%, 100% 57%, 99.7% 58%, 100% 59%, 99.8% 60%, 100% 61%, 99.6% 62%, 99.9% 63%, 100% 64%, 99.7% 65%, 100% 66%, 99.8% 67%, 99.5% 68%, 100% 69%, 99.9% 70%, 100% 71%, 99.6% 72%, 99.8% 73%, 100% 74%, 99.7% 75%, 99.9% 76%, 100% 77%, 99.5% 78%, 100% 79%, 99.8% 80%, 99.6% 81%, 100% 82%, 99.9% 83%, 100% 83%, 99.5% 84%, 99.7% 85%, 100% 86%, 99.8% 87%, 99.6% 88%, 100% 89%, 99.9% 90%, 100% 91%, 99.7% 92%, 100% 93%, 99.8% 94%, 100% 95%, 99.6% 96%, 99.5% 97%, 100% 98%, 99.9% 99%, 100% 100%, -10% 100%, -10% 0%);
+	
+	--torn-all-sides: polygon(
+		0% 0%, 2% 0.2%, 4% 0%, 6% 0.3%, 8% 0.1%, 10% 0.2%, 12% 0%, 14% 0.3%, 16% 0.1%, 18% 0.2%, 20% 0%, 22% 0.3%, 24% 0.1%, 26% 0.2%, 28% 0%, 30% 0.3%, 32% 0.1%, 34% 0.2%, 36% 0%, 38% 0.3%, 40% 0.1%, 42% 0.2%, 44% 0%, 46% 0.3%, 48% 0.1%, 50% 0.2%, 52% 0%, 54% 0.3%, 56% 0.1%, 58% 0.2%, 60% 0%, 62% 0.3%, 64% 0.1%, 66% 0.2%, 68% 0%, 70% 0.3%, 72% 0.1%, 74% 0.2%, 76% 0%, 78% 0.3%, 80% 0.1%, 82% 0.2%, 84% 0%, 86% 0.3%, 88% 0.1%, 90% 0.2%, 92% 0%, 94% 0.3%, 96% 0.1%, 98% 0.2%, 100% 0%,
+		100% 2%, 99.8% 4%, 100% 6%, 99.7% 8%, 100% 10%, 99.9% 12%, 100% 14%, 99.7% 16%, 100% 18%, 99.8% 20%, 100% 22%, 99.7% 24%, 100% 26%, 99.9% 28%, 100% 30%, 99.7% 32%, 100% 34%, 99.8% 36%, 100% 38%, 99.7% 40%, 100% 42%, 99.9% 44%, 100% 46%, 99.7% 48%, 100% 50%, 99.8% 52%, 100% 54%, 99.7% 56%, 100% 58%, 99.9% 60%, 100% 62%, 99.7% 64%, 100% 66%, 99.8% 68%, 100% 70%, 99.7% 72%, 100% 74%, 99.9% 76%, 100% 78%, 99.7% 80%, 100% 82%, 99.8% 84%, 100% 86%, 99.7% 88%, 100% 90%, 99.9% 92%, 100% 94%, 99.8% 96%, 100% 98%, 100% 100%,
+		98% 100%, 96% 99.8%, 94% 100%, 92% 99.7%, 90% 100%, 88% 99.9%, 86% 100%, 84% 99.7%, 82% 100%, 80% 99.8%, 78% 100%, 76% 99.7%, 74% 100%, 72% 99.9%, 70% 100%, 68% 99.7%, 66% 100%, 64% 99.8%, 62% 100%, 60% 99.7%, 58% 100%, 56% 99.9%, 54% 100%, 52% 99.7%, 50% 100%, 48% 99.8%, 46% 100%, 44% 99.7%, 42% 100%, 40% 99.9%, 38% 100%, 36% 99.7%, 34% 100%, 32% 99.8%, 30% 100%, 28% 99.7%, 26% 100%, 24% 99.9%, 22% 100%, 20% 99.7%, 18% 100%, 16% 99.8%, 14% 100%, 12% 99.7%, 10% 100%, 8% 99.9%, 6% 100%, 4% 99.8%, 2% 100%, 0% 100%,
+		0% 98%, 0.2% 96%, 0% 94%, 0.3% 92%, 0% 90%, 0.1% 88%, 0% 86%, 0.3% 84%, 0% 82%, 0.2% 80%, 0% 78%, 0.3% 76%, 0% 74%, 0.1% 72%, 0% 70%, 0.3% 68%, 0% 66%, 0.2% 64%, 0% 62%, 0.3% 60%, 0% 58%, 0.1% 56%, 0% 54%, 0.3% 52%, 0% 50%, 0.2% 48%, 0% 46%, 0.3% 44%, 0% 42%, 0.1% 40%, 0% 38%, 0.3% 36%, 0% 34%, 0.2% 32%, 0% 30%, 0.3% 28%, 0% 26%, 0.1% 24%, 0% 22%, 0.3% 20%, 0% 18%, 0.2% 16%, 0% 14%, 0.3% 12%, 0% 10%, 0.1% 8%, 0% 6%, 0.3% 4%, 0% 2%, 0% 0%
+	);
+	
+	--torn-top-bottom: polygon(
+		0% 0%, 2% 0.2%, 4% 0%, 6% 0.3%, 8% 0.1%, 10% 0.2%, 12% 0%, 14% 0.3%, 16% 0.1%, 18% 0.2%, 20% 0%, 22% 0.3%, 24% 0.1%, 26% 0.2%, 28% 0%, 30% 0.3%, 32% 0.1%, 34% 0.2%, 36% 0%, 38% 0.3%, 40% 0.1%, 42% 0.2%, 44% 0%, 46% 0.3%, 48% 0.1%, 50% 0.2%, 52% 0%, 54% 0.3%, 56% 0.1%, 58% 0.2%, 60% 0%, 62% 0.3%, 64% 0.1%, 66% 0.2%, 68% 0%, 70% 0.3%, 72% 0.1%, 74% 0.2%, 76% 0%, 78% 0.3%, 80% 0.1%, 82% 0.2%, 84% 0%, 86% 0.3%, 88% 0.1%, 90% 0.2%, 92% 0%, 94% 0.3%, 96% 0.1%, 98% 0.2%, 100% 0%,
+		100% 0%, 100% 100%,
+		100% 100%, 98% 99.8%, 96% 100%, 94% 99.7%, 92% 100%, 90% 99.9%, 88% 100%, 86% 99.7%, 84% 100%, 82% 99.8%, 80% 100%, 78% 99.7%, 76% 100%, 74% 99.9%, 72% 100%, 70% 99.7%, 68% 100%, 66% 99.8%, 64% 100%, 62% 99.7%, 60% 100%, 58% 99.9%, 56% 100%, 54% 99.7%, 52% 100%, 50% 99.8%, 48% 100%, 46% 99.7%, 44% 100%, 42% 99.9%, 40% 100%, 38% 99.7%, 36% 100%, 34% 99.8%, 32% 100%, 30% 99.7%, 28% 100%, 26% 99.9%, 24% 100%, 22% 99.7%, 20% 100%, 18% 99.8%, 16% 100%, 14% 99.7%, 12% 100%, 10% 99.9%, 8% 100%, 6% 99.8%, 4% 100%, 2% 99.7%, 0% 100%,
+		0% 100%, 0% 0%
+	);
+}
+
+/* ===================================
+   BASE STYLES
+   =================================== */
+@layer base {
+	html,
+	body {
+		@apply h-full m-0 p-0;
+		font-family: 'Montserrat', Arial, sans-serif;
+		background: var(--primary-bg);
+		color: var(--section-bg);
+		scroll-snap-type: y proximity;
+		scroll-behavior: smooth;
+		overflow-y: scroll;
+	}
+
+	body {
+		@apply min-h-screen overflow-x-hidden;
+	}
+
+	h2 {
+		font-family: 'MisterFirley', Arial, sans-serif;
+	}
+
+	p {
+		font-family: 'Oswald', Arial, sans-serif;
+		color: var(--text);
+	}
+}
+
+/* ===================================
+   LAYOUT - SECTIONS
+   =================================== */
+#main-content {
+	scroll-snap-type: y proximity;
+}
+
+.section {
+	height: 100vh;
+	padding: var(--section-padding);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	scroll-snap-align: start;
+	background: var(--primary-bg);
+	box-sizing: border-box;
+}
+
+.section-inner {
+	position: relative;
+	background: var(--section-bg);
+	box-shadow: 0 4px 32px #0002;
+	padding: 3rem 2.5rem;
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	transition: transform 0.2s ease-out;
+	z-index: 3;
+	will-change: transform;
+	-webkit-clip-path: var(--torn-all-sides);
+	clip-path: var(--torn-all-sides);
+}
+
+/* ===================================
+   CHROMATIC ABERRATION EFFECT
+   =================================== */
+.chromatic-layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	max-width: 900px;
+	min-height: 100%;
+	padding: 3rem 2.5rem;
+	box-sizing: border-box;
+	pointer-events: none;
+	transition: transform 0.2s ease-out;
+	-webkit-clip-path: var(--torn-all-sides);
+	clip-path: var(--torn-all-sides);
+	will-change: transform;
+}
+
+.chromatic-layer.cyan {
+	background: var(--cyan);
+	opacity: 1;
+	z-index: 1;
+}
+
+.chromatic-layer.magenta {
+	background: var(--magenta);
+	opacity: 1;
+	mix-blend-mode: multiply;
+	z-index: 2;
+}
+
+/* ===================================
+   DUST OVERLAY EFFECT
+   =================================== */
+#dust-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	background: url('/images/dustoverlay.jpg');
+	background-size: cover;
+	mix-blend-mode: screen;
+	opacity: 0.05;
+	z-index: 9999;
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+@keyframes flyDiagonal {
+	0% {
+		transform: translateX(-100vw) translateY(50vh) rotate(-15deg);
+	}
+	100% {
+		transform: translateX(100vw) translateY(-50vh) rotate(-15deg);
+	}
+}
+
+@keyframes wobbleSlow {
+	0%, 100% { transform: rotate(0deg); }
+	25% { transform: rotate(2deg); }
+	50% { transform: rotate(0deg); }
+	75% { transform: rotate(-2deg); }
+}
+
+@keyframes floatWaveSmooth {
+	0% { transform: translateY(0); }
+	50% { transform: translateY(-20px); }
+	100% { transform: translateY(0); }
+}
+
+@keyframes bounce {
+	0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+	40% { transform: translateX(-50%) translateY(-10px); }
+	60% { transform: translateX(-50%) translateY(-5px); }
+}
+
+@keyframes flyLeftToRight {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(100vw);
+	}
+}
+
+@keyframes flyRightToLeft {
+	from {
+		transform: translateX(100vw);
+	}
+	to {
+		transform: translateX(-100%);
+	}
+}
+
+/* ===================================
+   RESPONSIVE - MOBILE
+   =================================== */
+@media (max-width: 768px) {
+	.tall-section {
+		min-height: 150vh;
+	}
+	
+	.flying-text {
+		font-size: clamp(1.5rem, 6vw, 4rem);
+	}
+	
+	.diagonal-text-line {
+		font-size: 2.5rem;
+	}
+}

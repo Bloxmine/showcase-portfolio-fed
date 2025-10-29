@@ -1,0 +1,68 @@
+.aboutInner {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+	align-items: stretch;
+	text-align: left;
+}
+
+.aboutInfo, .aboutMedia {
+	background: var(--secondary-bg);
+	padding: 2rem 1.5rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.aboutInfo h2 {
+	font-size: 2.2rem;
+	margin-bottom: 1rem;
+	color: var(--section-text);
+}
+
+.aboutInfo p {
+	font-size: 1.1rem;
+	color: var(--muted);
+}
+
+.aboutMedia {
+	align-items: center;
+	text-align: center;
+}
+
+.profileImage {
+	width: 120px;
+	height: 120px;
+	object-fit: cover;
+	margin-bottom: 1.2rem;
+	border: 3px solid var(--accent);
+}
+
+.socialLinks {
+	display: flex;
+	gap: 1.2rem;
+	justify-content: center;
+	margin-top: 1rem;
+}
+
+.socialLinks a {
+	color: var(--accent);
+	font-size: 1.6rem;
+	transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.socialLinks a:hover {
+	color: #fff;
+	transform: scale(1.1);
+}
+
+.socialLinks img {
+	width: 64px;
+	height: 64px;
+	border: none;
+	transition: transform 0.2s ease-in-out;
+}
+
+.socialLinks a:hover img {
+	transform: rotate(5deg) scale(1.1);
+}

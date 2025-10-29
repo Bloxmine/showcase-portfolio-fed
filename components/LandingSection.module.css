@@ -1,0 +1,82 @@
+.landing .sectionInner {
+	padding: 5rem 2.5rem;
+}
+
+/* Diagonal background text */
+.diagonalBgText {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.diagonalTextLine {
+	position: absolute;
+	white-space: nowrap;
+	font-family: var(--font-flying-text);
+	font-size: 4rem;
+	font-weight: 900;
+	color: rgba(128, 128, 128, 0.08);
+	transform: rotate(-15deg);
+	animation: flyDiagonal 25s linear infinite;
+	user-select: none;
+}
+
+.diagonalTextLine:nth-child(1) {
+	top: -10%;
+	left: -100%;
+	animation-duration: 25s;
+}
+
+.diagonalTextLine:nth-child(2) {
+	top: 20%;
+	left: -100%;
+	animation-duration: 22s;
+}
+
+.diagonalTextLine:nth-child(3) {
+	top: 50%;
+	left: -100%;
+	animation-duration: 28s;
+}
+
+.diagonalTextLine:nth-child(4) {
+	top: 80%;
+	left: -100%;
+	animation-duration: 24s;
+}
+
+.diagonalTextLine span {
+	margin-right: 3rem;
+	display: inline-block;
+}
+
+/* Letter Animation */
+.letterBox {
+	display: flex;
+	gap: 10px;
+	align-items: flex-end;
+	animation: wobbleSlow 3s ease-in-out infinite;
+}
+
+.letterImage {
+	width: 100px;
+	height: 100px;
+	display: inline-block;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	animation: floatWaveSmooth 2s ease-in-out infinite;
+	transform-origin: center bottom;
+	filter: url(#kill);
+}
+
+.letterImage:nth-child(1) { animation-delay: 0s; }
+.letterImage:nth-child(2) { animation-delay: 0.1s; }
+.letterImage:nth-child(3) { animation-delay: 0.2s; }
+.letterImage:nth-child(4) { animation-delay: 0.3s; }
+.letterImage:nth-child(5) { animation-delay: 0.4s; }

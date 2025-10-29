@@ -1,0 +1,229 @@
+.projects {
+	background: var(--section-bg);
+	padding: 4rem 2rem;
+	-webkit-clip-path: var(--torn-top-bottom);
+	clip-path: var(--torn-top-bottom);
+}
+
+.projects h2 {
+	font-size: 2.5rem;
+	color: var(--text);
+	margin-bottom: 1.5rem;
+}
+
+.projectsControls {
+	margin-bottom: 2.5rem;
+}
+
+.sortSelect {
+	font-family: "Inter", sans-serif;
+	padding: 0.5em 1em;
+	margin: 0 0.5em;
+}
+
+.viewButton {
+	font-family: "Inter", sans-serif;
+	font-weight: 900;
+	font-size: 1.05rem;
+	padding: 0.5em;
+	margin: 0 0.5em;
+	border-radius: 0;
+	border: none;
+	cursor: pointer;
+	position: relative;
+	background: transparent;
+	color: #000;
+	transition: all 175ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.viewButton img {
+	width: 32px;
+	height: 32px;
+	vertical-align: middle;
+}
+
+.viewButton:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+/* Carousel */
+.carousel {
+	display: flex;
+	gap: 2.5rem;
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding: 2rem 1.5rem;
+	transition: all var(--transition);
+	justify-content: flex-start;
+	flex-wrap: nowrap;
+	scroll-behavior: smooth;
+	scrollbar-width: thin;
+	scrollbar-color: var(--accent) var(--section-bg);
+	max-width: 100%;
+	min-height: 300px;
+}
+
+.carousel::-webkit-scrollbar {
+	height: 10px;
+	background: var(--section-bg);
+}
+
+.carousel::-webkit-scrollbar-thumb {
+	background: var(--accent);
+	border-radius: 6px;
+}
+
+.viewList {
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 60vh;
+	padding: 2rem;
+}
+
+.viewThumb {
+	flex-direction: row;
+	align-items: stretch;
+}
+
+/* Project Items */
+.projectItem {
+	background: var(--secondary-bg);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	border-radius: 8px;
+	min-width: 240px;
+	max-width: 280px;
+	flex: 0 0 240px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0 0 1.5rem 0;
+	transition: transform var(--transition), box-shadow var(--transition);
+	cursor: grab;
+}
+
+.viewList .projectItem {
+	flex-direction: row;
+	max-width: 650px;
+	min-width: 300px;
+	width: 100%;
+	align-items: stretch;
+	padding: 1.5rem 0 1.5rem 2.5rem;
+	border-radius: 12px;
+}
+
+.projectImage {
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+	margin-bottom: 1.25rem;
+	border: none;
+	border-radius: 8px 8px 0 0;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	transition: transform var(--transition), box-shadow var(--transition);
+	display: block;
+}
+
+.projectItem:hover .projectImage {
+	transform: scale(1.02);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.viewList .projectImage {
+	margin-bottom: 0;
+	margin-right: 2rem;
+	max-width: 180px;
+	border-radius: 8px;
+}
+
+.projectInfo {
+	text-align: left;
+	text-overflow: ellipsis;
+	width: 100%;
+	padding: 0 2.5rem 1.5rem 2.5rem;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+.projectInfo h3 {
+	font-family: 'Intranet', Arial, sans-serif;
+	font-size: 1rem;
+	font-weight: 700;
+	color: var(--text);
+	letter-spacing: -0.02em;
+	margin: 0 0 0.5rem 10px;
+}
+
+.projectInfo p {
+	color: var(--muted);
+	font-size: 1rem;
+	letter-spacing: -0.01em;
+	text-overflow: inherit;
+	line-height: 1.6;
+	margin-bottom: 1.25rem;
+	flex-grow: 1;
+	margin-left: 10px;
+}
+
+.projectLinks {
+	display: flex;
+	gap: 0;
+	margin-top: auto;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: 0;
+	flex-wrap: nowrap;
+	border-top: 2px solid var(--section-bg);
+}
+
+.projectLinks a {
+	font-family: "Inter", sans-serif;
+	display: inline-block;
+	padding: 0.85em 1.5em;
+	background: white;
+	color: #000;
+	text-decoration: none;
+	font-weight: 900;
+	font-size: 0.9rem;
+	border: none;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	cursor: pointer;
+	position: relative;
+	flex: 1;
+	text-align: center;
+}
+
+.projectLinks a:not(:last-child) {
+	border-right: 2px solid var(--section-bg);
+}
+
+.projectLinks a:hover {
+	background: var(--accent);
+	color: #fff;
+}
+
+.viewList .projectInfo {
+	padding-right: 0;
+	padding-bottom: 1.5rem;
+}
+
+.viewList .projectLinks {
+	flex-direction: column;
+	margin-right: 0;
+	margin-bottom: 0;
+	border-top: none;
+	border-left: 2px solid var(--section-bg);
+}
+
+.viewList .projectLinks a {
+	border-right: none;
+	border-bottom: 2px solid var(--section-bg);
+}
+
+.viewList .projectLinks a:last-child {
+	border-bottom: none;
+}

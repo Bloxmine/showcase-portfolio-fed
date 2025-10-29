@@ -1,0 +1,34 @@
+h2 {
+	font-size: 2.5rem;
+	color: var(--section-text);
+	margin-bottom: 1.5rem;
+}
+
+p {
+	font-size: 1.1rem;
+	color: var(--muted);
+	margin-bottom: 1rem;
+}
+
+.contactButton {
+	display: inline-block;
+	margin-top: 2rem;
+	border: none;
+	background: none;
+	cursor: pointer;
+}
+
+.contactButton img {
+	width: 64px;
+	height: 64px;
+	object-fit: contain;
+	transition: transform var(--transition);
+}
+
+.contactButton:hover img {
+	transform: scale(1.1) rotate(5deg);
+}
+
+.contactButton:active img {
+	transform: scale(0.95);
+}
