@@ -50,3 +50,7 @@ To run this project locally, follow these steps:
 3. **Content Addition**: Added project details, images, and links.
 4. **Testing**: Ensured responsiveness and cross-browser compatibility.
 5. **Deployment**: Deployed the website on my own website, heind.nl.
+
+## Changes and iterations
+- Colours changed a lot during the process. From simple black and white, to a more CGA palette inspired by old DOS games.
+- The animations were not always robust enough. They don't always want to render because of the ScrollTrigger not initializing properly. I've decided to just leave it as is for now and have the text animate regardless of the scroll position.

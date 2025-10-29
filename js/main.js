@@ -262,109 +262,14 @@ document.addEventListener('mouseleave', () => {
 });
 
 // ===================================
-// DIAGONAL CANVAS ANIMATION
+// DIAGONAL FLYING BG TEXT ANIMATION
 // ===================================
 
-/**
- * Setup and animate diagonal background text using Canvas
- * Much more efficient than DOM-based animation
- */
-function setupDiagonalCanvas() {
-	const canvas = document.getElementById('diagonal-canvas');
-	if (!canvas) return;
-	
-	const ctx = canvas.getContext('2d');
-	const section = canvas.closest('.landing');
-	
-	// diagonal lines
-	const lines = [
-		{ words: ['DEVELOPER', 'CREATIVE', 'DESIGNER', 'CODER'], yOffset: -0.1, duration: 25, phase: 0 },
-		{ words: ['FRONTEND', 'FULLSTACK', 'JAVASCRIPT', 'NEXT'], yOffset: 0.2, duration: 22, phase: -2 },
-		{ words: ['UI/UX', 'PORTFOLIO', 'WEBSITE', 'INTERACTIVE'], yOffset: 0.5, duration: 28, phase: -4 },
-		{ words: ['MODERN', 'RESPONSIVE', 'DYNAMIC', 'ANIMATED'], yOffset: 0.8, duration: 24, phase: -6 },
-		{ words: ['BUZZWORDS', 'AWESOME', 'SYNERGY', 'EPIC'], yOffset: 1.1, duration: 26, phase: -8 },
-		{ words: ['EVEN', 'MORE', 'BUZZ', 'WORDS'], yOffset: 1.4, duration: 30, phase: -10 },
-		{ words: ['SEAMLESS', 'LOOP', 'ANIMATION', 'CANVAS'], yOffset: 1.7, duration: 32, phase: -12 },
-		{ words: ['ADDITIONAL', 'WORDS', 'FOR', 'VARIETY'], yOffset: 2.0, duration: 34, phase: -14 }
-	];
-	
-	// canvas setup
-	function resizeCanvas() {
-		const rect = section.getBoundingClientRect();
-		canvas.width = rect.width;
-		canvas.height = rect.height;
-	}
-	
-	resizeCanvas();
-	window.addEventListener('resize', resizeCanvas);
-	
-	// animation variables
-	const rotation = -15 * Math.PI / 180; // -15 degrees in radians
-	const fontSize = 64; // 4rem equivalent
-	const wordSpacing = 64; // 4rem spacing between words
-	let startTime = Date.now();
-	const linePatterns = lines.map(line => {
-		ctx.font = `900 ${fontSize}px 'Intranet', Arial, sans-serif`;
-		let totalWidth = 0;
-		const widths = line.words.map(word => {
-			const width = ctx.measureText(word).width;
-			totalWidth += width + wordSpacing;
-			return width;
-		});
-		return { totalWidth, widths };
+function setupDiagonalText() {
+	const textLines = document.querySelectorAll('.diagonal-text-line');
+	textLines.forEach((line, index) => {
+		line.style.setProperty('--delay', `${index * 0.2}s`);
 	});
-	
-	// animation loop
-	function animate() {
-		const currentTime = (Date.now() - startTime) / 1000;
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.font = `900 ${fontSize}px 'Intranet', Arial, sans-serif`;
-		ctx.fillStyle = 'rgba(128, 128, 128, 0.08)';
-		ctx.textBaseline = 'middle';
-		
-		lines.forEach((line, lineIndex) => {
-			const cycleTime = (currentTime + line.phase) % line.duration;
-			const progress = cycleTime / line.duration;
-			const pattern = linePatterns[lineIndex];
-			
-			// calculate position (moving from left to right diagonally)
-			const startX = -canvas.width;
-			const endX = canvas.width * 2;
-			const startY = canvas.height * 0.5;
-			const endY = -canvas.height * 0.5;
-			
-			const x = startX + (endX - startX) * progress;
-			const y = canvas.height * line.yOffset + (endY - startY) * progress;
-			
-			// save context for rotation
-			ctx.save();
-			ctx.translate(x, y);
-			ctx.rotate(rotation);
-			
-			// calculate how much space we need to fill (with buffer for rotation)
-			const bufferSpace = Math.max(canvas.width, canvas.height) * 2;
-			
-			// Draw repeated words to fill the line seamlessly
-			// Use modulo to create seamless loop - offset based on pattern width
-			const patternOffset = (progress * pattern.totalWidth) % pattern.totalWidth;
-			let currentX = -patternOffset;
-			const stopX = bufferSpace;
-			
-			while (currentX < stopX) {
-				line.words.forEach((word, wordIndex) => {
-					ctx.fillText(word, currentX, 0);
-					currentX += pattern.widths[wordIndex] + wordSpacing;
-				});
-			}
-			
-			ctx.restore();
-		});
-		
-		requestAnimationFrame(animate);
-	}
-	
-	// Start animation
-	animate();
 }
 
 // ===================================
@@ -473,7 +378,7 @@ function updateHash(id) {
 }
 
 /**
- * Setup section reveal animations
+ * section reveal
  */
 function setupSectionAnimations() {
 	const sections = gsap.utils.toArray('.section:not(.landing):not(.full-width)');
@@ -493,7 +398,7 @@ function setupSectionAnimations() {
 		}
 	});
 	
-	// Create observer for reveals
+	// sectionobserver, does it
 	const sectionObserver = new IntersectionObserver((entries) => {
 		entries.forEach(entry => {
 			if (entry.isIntersecting) {
@@ -510,14 +415,14 @@ function setupSectionAnimations() {
 }
 
 /**
- * Animate section reveal based on device type
+ * animate section reveal based on device type
  */
 function animateSectionReveal(section, touchDevice) {
 	const sectionInner = section.querySelector('.section-inner');
 	if (!sectionInner) return;
 	
 	if (touchDevice) {
-		// Simple fade for touch devices
+		// simple fade for touch devices
 		gsap.to(sectionInner, {
 			opacity: 1,
 			y: 0,
@@ -525,7 +430,7 @@ function animateSectionReveal(section, touchDevice) {
 			ease: 'power2.out'
 		});
 	} else {
-		// Stamp animation for desktop
+		// stamp animation for desktop
 		gsap.to(sectionInner, {
 			y: 0,
 			scale: 1,
@@ -535,7 +440,7 @@ function animateSectionReveal(section, touchDevice) {
 			duration: 0.8
 		});
 		
-		// Add shake effect
+		// add shake effect
 		gsap.delayedCall(0.5, () => {
 			gsap.to(sectionInner, {
 				keyframes: [
@@ -551,75 +456,7 @@ function animateSectionReveal(section, touchDevice) {
 }
 
 /**
- * Setup flying text animations
- */
-function setupFlyingTextAnimations() {
-	const flyingTexts = gsap.utils.toArray('.flying-text');
-	const animatedSection = document.querySelector('#animated');
-	
-	if (flyingTexts.length === 0 || !animatedSection) return;
-	
-	flyingTexts.forEach((text, index) => {
-		const speed = parseFloat(text.dataset.speed) || 1;
-		const isFromRight = text.style.transform.includes('translateX(100%)');
-		const delay = index * 0.05;
-		
-		// Set initial state
-		gsap.set(text, {
-			opacity: 0,
-			x: isFromRight ? '120vw' : '-120vw'
-		});
-		
-		// Create flying animation
-		gsap.to(text, {
-			x: isFromRight ? '-120vw' : '120vw',
-			opacity: 1,
-			ease: 'none',
-			delay: delay,
-			scrollTrigger: {
-				trigger: animatedSection,
-				start: 'top 100%',
-				end: 'bottom 0%',
-				scrub: speed,
-				refreshPriority: -1,
-				invalidateOnRefresh: true,
-				onUpdate: (self) => {
-					const progress = self.progress;
-					let opacity = 1;
-					
-					if (progress < 0.2) {
-						opacity = progress / 0.2;
-					} else if (progress > 0.8) {
-						opacity = (1 - progress) / 0.2;
-					}
-					
-					gsap.set(text, { opacity });
-				}
-			}
-		});
-	});
-}
-
-/**
- * Setup scroll snap behavior for animated section
- */
-function setupScrollSnapBehavior() {
-	const animatedSection = document.querySelector('#animated');
-	if (!animatedSection || isTouchDevice()) return;
-	
-	ScrollTrigger.create({
-		trigger: animatedSection,
-		start: 'top 80%',
-		end: 'bottom 20%',
-		onEnter: () => document.body.style.scrollSnapType = 'none',
-		onLeave: () => document.body.style.scrollSnapType = 'y proximity',
-		onEnterBack: () => document.body.style.scrollSnapType = 'none',
-		onLeaveBack: () => document.body.style.scrollSnapType = 'y proximity'
-	});
-}
-
-/**
- * Initialize GSAP-based features
+ * initialize GSAP-based features
  */
 function initializeGSAP() {
 	if (typeof gsap === 'undefined') {

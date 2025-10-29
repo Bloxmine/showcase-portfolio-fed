@@ -12,8 +12,49 @@
         <!-- landing section -->
 
         <section id="landing" class="section landing">
-            <!-- diagonal flying background text - canvas implementation -->
-            <canvas id="diagonal-canvas" class="diagonal-bg-canvas"></canvas>
+            <!-- diagonal flying background text -->
+            <div class="diagonal-bg-text">
+                <div class="diagonal-text-line" style="--delay: 0s;">
+                    <span>DEVELOPER</span>
+                    <span>CREATIVE</span>
+                    <span>DESIGNER</span>
+                    <span>CODER</span>
+                    <span>DEVELOPER</span>
+                    <span>CREATIVE</span>
+                    <span>DESIGNER</span>
+                    <span>CODER</span>
+                </div>
+                <div class="diagonal-text-line" style="--delay: -2s;">
+                    <span>FRONTEND</span>
+                    <span>FULLSTACK</span>
+                    <span>JAVASCRIPT</span>
+                    <span>REACT</span>
+                    <span>FRONTEND</span>
+                    <span>FULLSTACK</span>
+                    <span>JAVASCRIPT</span>
+                    <span>REACT</span>
+                </div>
+                <div class="diagonal-text-line" style="--delay: -4s;">
+                    <span>UI/UX</span>
+                    <span>PORTFOLIO</span>
+                    <span>WEBSITE</span>
+                    <span>INTERACTIVE</span>
+                    <span>UI/UX</span>
+                    <span>PORTFOLIO</span>
+                    <span>WEBSITE</span>
+                    <span>INTERACTIVE</span>
+                </div>
+                <div class="diagonal-text-line" style="--delay: -6s;">
+                    <span>MODERN</span>
+                    <span>RESPONSIVE</span>
+                    <span>DYNAMIC</span>
+                    <span>ANIMATION</span>
+                    <span>MODERN</span>
+                    <span>RESPONSIVE</span>
+                    <span>DYNAMIC</span>
+                    <span>ANIMATION</span>
+                </div>
+            </div>
             
             <div class="section-inner">
             <div class="letterBox">
@@ -72,8 +113,12 @@ I've been a student at Fontys ICT & Media Design since 2023.</p>
                     <option value="alpha">Alphabetical</option>
                     <option value="date">By Date</option>
                 </select>
-                <button id="view-list">List View</button>
-                <button id="view-thumb">Thumbnail View</button>
+                <button id="view-list" aria-label="List View" title="List View">
+                    <img src="images/icons/listview.png" alt="List view icon" width="24" height="24">
+                </button>
+                <button id="view-thumb" aria-label="Thumbnail View" title="Thumbnail View">
+                    <img src="images/icons/thumbnail.png" alt="Thumbnail view icon" width="24" height="24">
+                </button>
             </div>
             <div id="projects-carousel" class="carousel view-thumb">
                 <!-- project items will be loaded dynamically by JS -->

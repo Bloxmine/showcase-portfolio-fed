@@ -224,17 +224,6 @@ p {
 	text-shadow: 0 4px 32px #00bcd4aa;
 }
 
-/* Diagonal Flying Background Text - Canvas */
-.diagonal-bg-canvas {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	z-index: 0;
-}
-
 /* Legacy diagonal text styles - kept for fallback */
 .diagonal-bg-text {
 	position: absolute;
@@ -245,7 +234,6 @@ p {
 	overflow: hidden;
 	pointer-events: none;
 	z-index: 0;
-	display: none; /* Hidden when canvas is used */
 }
 
 .diagonal-text-line {
@@ -432,6 +420,23 @@ p {
 	transition: all 175ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
+.projects-controls button img {
+	width: 32px;
+	height: 32px;
+	vertical-align: middle;
+}
+
+#view-list,
+#view-thumb {
+	background: transparent;
+	padding: 0.5em;
+}
+
+#view-list:hover,
+#view-thumb:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
 @supports (font-variation-settings: normal) {
 	.projects-controls button {
 		font-family: "Inter var", sans-serif;
@@ -501,8 +506,8 @@ p {
 	max-width: 650px;
 	min-width: 300px;
 	width: 100%;
-	align-items: center;
-	padding: 1.5rem 2.5rem;
+	align-items: stretch;
+	padding: 1.5rem 0 1.5rem 2.5rem;
 	border-radius: 12px;
 }
 
@@ -533,19 +538,19 @@ p {
 	text-align: left;
 	text-overflow: ellipsis;
 	width: 100%;
-	padding: 0 1.5rem;
+	padding: 0 2.5rem 1.5rem 2.5rem;
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
 }
 
 .project-info h3 {
-	margin: 0 0 0.75rem 0;
 	font-family: 'Intranet', Arial, sans-serif;
-	font-size: 1.4rem;
+	font-size: 1rem;
 	font-weight: 700;
 	color: var(--text);
 	letter-spacing: -0.02em;
+	margin: 0 0 0.5rem 10px;
 }
 
 .project-info p {
@@ -556,36 +561,68 @@ p {
 	line-height: 1.6;
 	margin-bottom: 1.25rem;
 	flex-grow: 1;
+	margin-left: 10px;
 }
 
 .project-links {
 	display: flex;
-	gap: 1rem;
+	gap: 0;
 	margin-top: auto;
-	flex-wrap: wrap;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: 0;
+	flex-wrap: nowrap;
+	border-top: 2px solid var(--section-bg);
 }
 
 .project-links a {
 	font-family: "Inter", sans-serif;
 	display: inline-block;
-	padding: 0.65em 1.5em;
+	padding: 0.85em 1.5em;
 	background: white;
 	color: #000;
 	text-decoration: none;
 	font-weight: 900;
 	font-size: 0.9rem;
-	border-radius: 24px;
 	border: none;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
 	cursor: pointer;
 	position: relative;
+	flex: 1;
+	text-align: center;
+}
+
+.project-links a:not(:last-child) {
+	border-right: 2px solid var(--section-bg);
 }
 
 .project-links a:hover {
 	background: var(--accent);
 	color: #fff;
 	
+}
+
+.carousel.view-list .project-info {
+	padding-right: 0;
+	padding-bottom: 1.5rem;
+}
+
+.carousel.view-list .project-links {
+	flex-direction: column;
+	margin-right: 0;
+	margin-bottom: 0;
+	border-top: none;
+	border-left: 2px solid var(--section-bg);
+}
+
+.carousel.view-list .project-links a {
+	border-right: none;
+	border-bottom: 2px solid var(--section-bg);
+}
+
+.carousel.view-list .project-links a:last-child {
+	border-bottom: none;
 }
 
 @supports (font-variation-settings: normal) {
@@ -638,6 +675,24 @@ p {
 	clip-path: var(--torn-top-bottom);
 }
 
+/* ===================================
+   ANIMATED FLYING TEXT SECTION
+   =================================== */
+.tall-section {
+	min-height: 200vh;
+	position: relative;
+	overflow: hidden;
+	scroll-snap-align: start;
+}
+
+.animated.tall-section {
+	background: var(--section-bg);
+	-webkit-clip-path: var(--torn-top-bottom);
+	clip-path: var(--torn-top-bottom);
+	/* Ensure section has enough height for smooth animations */
+	min-height: 250vh;
+}
+
 .text-flying-container {
 	position: absolute;
 	top: 0;
@@ -645,12 +700,14 @@ p {
 	width: 100%;
 	height: 100%;
 	pointer-events: none;
+	overflow: visible; /* Allow text to overflow container */
 }
 
 .text-flying-by {
 	position: relative;
 	width: 100%;
 	height: 100%;
+	overflow: visible;
 }
 
 .flying-text {
@@ -661,20 +718,89 @@ p {
 	color: var(--text);
 	white-space: nowrap;
 	pointer-events: none;
-	opacity: 0;
-	transform: translateX(-100%);
-	will-change: transform, opacity;
+	opacity: 1;
+	will-change: transform;
+	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	backface-visibility: hidden;
+	-webkit-font-smoothing: antialiased;
 }
 
-.flying-text:nth-child(1) { top: 10%; left: -20%; }
-.flying-text:nth-child(2) { top: 20%; right: -20%; transform: translateX(100%); }
-.flying-text:nth-child(3) { top: 30%; left: -30%; }
-.flying-text:nth-child(4) { top: 40%; right: -30%; transform: translateX(100%); }
-.flying-text:nth-child(5) { top: 50%; left: -25%; }
-.flying-text:nth-child(6) { top: 60%; right: -25%; transform: translateX(100%); }
-.flying-text:nth-child(7) { top: 70%; left: -35%; }
-.flying-text:nth-child(8) { top: 80%; right: -35%; transform: translateX(100%); }
-.flying-text:nth-child(9) { top: 90%; left: -20%; }
+@keyframes flyLeftToRight {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(100vw);
+	}
+}
+
+@keyframes flyRightToLeft {
+	from {
+		transform: translateX(100vw);
+	}
+	to {
+		transform: translateX(-100%);
+	}
+}
+
+/* Positioning with alternating directions and staggered delays */
+/* Odd children: Left to Right */
+.flying-text:nth-child(1) { 
+	top: 5%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 0s;
+}
+.flying-text:nth-child(3) { 
+	top: 25%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 2s;
+}
+.flying-text:nth-child(5) { 
+	top: 45%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 4s;
+}
+.flying-text:nth-child(7) { 
+	top: 65%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 6s;
+}
+.flying-text:nth-child(9) { 
+	top: 85%; 
+	left: 0;
+	animation: flyLeftToRight 8s linear infinite;
+	animation-delay: 8s;
+}
+
+/* Even children: Right to Left */
+.flying-text:nth-child(2) { 
+	top: 15%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 1s;
+}
+.flying-text:nth-child(4) { 
+	top: 35%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 3s;
+}
+.flying-text:nth-child(6) { 
+	top: 55%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 5s;
+}
+.flying-text:nth-child(8) { 
+	top: 75%; 
+	right: 0;
+	animation: flyRightToLeft 8s linear infinite;
+	animation-delay: 7s;
+}
 
 /* ===================================
    CONTACT SECTION
